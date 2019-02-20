@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "257955261425",
+    "firebase_url": "https://kourse-1f5df.firebaseio.com",
+    "project_id": "kourse-1f5df",
+    "storage_bucket": "kourse-1f5df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257955261425:android:b6e71b5f9e013719",
+        "android_client_info": {
+          "package_name": "com.coe.kourse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257955261425-007e2icha23gj0qh0v5fqd5nhkvomkpt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coe.kourse",
+            "certificate_hash": "6adeb98f502458b3b593c7f1c16c5f187f41a0f0"
+          }
+        },
+        {
+          "client_id": "257955261425-67envts637j1lb2900h32umk7d0fe614.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7WTS0UKvQBEDXUB5FL610uCr4ehr2SV0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257955261425-67envts637j1lb2900h32umk7d0fe614.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
