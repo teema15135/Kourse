@@ -1,6 +1,8 @@
 package com.coe.kourse;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -17,6 +19,13 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         splashGif = (GifImageView)findViewById(R.id.splashGif);
+
+        splashGif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            }
+        });
 
         startFadeInSplash();
     }

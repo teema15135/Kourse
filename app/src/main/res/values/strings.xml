@@ -2,4 +2,8 @@
     <string name="app_name">Kourse</string>
     <string name="facebook_app_id">2187197791347876</string>
     <string name="fb_login_protocol_scheme">fb2187197791347876</string>
+    <string name="gglogin">Sign in with Google</string>
+    <string name="fline">Welcome to Kourse !</string>
+    <string name="sline">The easy way to manage your courses</string>
+    <string name="tline">with many management tools</string>
 </resources>
