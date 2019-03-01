@@ -6,4 +6,8 @@
     <string name="fline">Welcome to Kourse !</string>
     <string name="sline">The easy way to manage your courses</string>
     <string name="tline">with many management tools</string>
+    <string name="home">Home</string>
+    <string name="calendar">Calendar</string>
+    <string name="notification">Notification</string>
+    <string name="profile">Profile</string>
 </resources>
