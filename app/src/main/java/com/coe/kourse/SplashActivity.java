@@ -2,11 +2,11 @@ package com.coe.kourse;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.appcompat.app.AppCompatActivity;
 import pl.droidsonroids.gif.GifImageView;
 
 public class SplashActivity extends AppCompatActivity {

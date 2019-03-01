@@ -1,11 +1,7 @@
 package com.coe.kourse;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
+import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +10,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
     }
 }
