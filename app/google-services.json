@@ -1,52 +1,74 @@
 {
   "project_info": {
-    "project_number": "257955261425",
-    "firebase_url": "https://kourse-1f5df.firebaseio.com",
-    "project_id": "kourse-1f5df",
-    "storage_bucket": "kourse-1f5df.appspot.com"
+    "project_number": "962818880211",
+    "firebase_url": "https://kourse-3e4ce.firebaseio.com",
+    "project_id": "kourse-3e4ce",
+    "storage_bucket": "kourse-3e4ce.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:257955261425:android:b6e71b5f9e013719",
+        "mobilesdk_app_id": "1:962818880211:android:b6e71b5f9e013719",
         "android_client_info": {
           "package_name": "com.coe.kourse"
         }
       },
       "oauth_client": [
         {
-          "client_id": "257955261425-007e2icha23gj0qh0v5fqd5nhkvomkpt.apps.googleusercontent.com",
+          "client_id": "962818880211-5a8d8jl96nm8itmsdjhg59miph5uqclu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.coe.kourse",
-            "certificate_hash": "6adeb98f502458b3b593c7f1c16c5f187f41a0f0"
+            "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
           }
-        },
-        {
-          "client_id": "257955261425-67envts637j1lb2900h32umk7d0fe614.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB7WTS0UKvQBEDXUB5FL610uCr4ehr2SV0"
+          "current_key": "AIzaSyA3lP9Z0r-lftHCD2OtBqSOT-dFpnKhIvg"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "257955261425-67envts637j1lb2900h32umk7d0fe614.apps.googleusercontent.com",
+              "client_id": "962818880211-pi2hi2rdi64hso3ad63frgf4421t5r9l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962818880211:android:2561559883a3c269",
+        "android_client_info": {
+          "package_name": "kourse.kku.ac.th.firebaselogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962818880211-8ap5sds8g0cdmc47mgt0hcrhp1a7qe15.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kourse.kku.ac.th.firebaselogin",
+            "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3lP9Z0r-lftHCD2OtBqSOT-dFpnKhIvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962818880211-pi2hi2rdi64hso3ad63frgf4421t5r9l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
