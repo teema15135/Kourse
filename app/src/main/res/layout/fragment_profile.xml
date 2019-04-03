@@ -23,13 +23,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/user"/>
-            <TextView
-                android:id="@+id/profile_name"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/aqua"
-                android:text="xxxxx"/>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,11 +32,12 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp" />
                 <TextView
+                    android:layout_marginTop="16dp"
                     android:fontFamily="@font/aqua"
                     android:id="@+id/profile_gmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="xxxxxxxxx@gmail.com" />
+                    android:text="chompu.luffy@gmail.com" />
             </LinearLayout>
         </LinearLayout>
 
@@ -58,9 +53,12 @@
         android:text="@string/profile_add_person"
         android:textAllCaps="false"/>
 
-    <ListView
+    <TextView
+        android:id="@+id/user1"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
-
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

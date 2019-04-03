@@ -10,45 +10,40 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:background="@color/yellow_pastel"/>
+            android:background="@drawable/home_cover"/>
         <!--<View-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="250dp"-->
             <!--android:background="#000000"-->
             <!--android:alpha="0.3"/>-->
         <TextView
+            android:shadowRadius="0.7dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="Kourse"
-            android:textColor="#424242"
+            android:alpha="0.6"
+            android:textColor="#ffff"
             android:fontFamily="@font/lobster"
             android:textSize="45sp"/>
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="@color/white"
-        android:textSize="60sp"/>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        app:borderWidth="0dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
-        app:rippleColor="@color/red_pastel"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        />
+        android:src="@drawable/ic_add"
+        app:borderWidth="0dp"
+        app:rippleColor="@color/red_pastel" />
 
 
 </RelativeLayout>

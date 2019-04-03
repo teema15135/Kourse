@@ -12,7 +12,7 @@
     <string name="profile">Profile</string>
     <string name="add_course_title">Add course</string>
     <string name="add_course_name">Course name</string>
-    <string name="add_course_total">Total</string>
+    <string name="add_course_total">Total hours</string>
     <string name="add_course_due">Due date payment</string>
     <string name="add_course_pay">Payment amount</string>
     <string name="add_course_time">Course time</string>

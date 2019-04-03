@@ -10,18 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ProfileFragment extends Fragment {
 
     Button dialogButton;
-
+    TextView user;
+    String name;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
         dialogButton = view.findViewById(R.id.profile_btn_person);
+        user = view.findViewById(R.id.user1);
 
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +47,9 @@ public class ProfileFragment extends Fragment {
                 buttonOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        name = namePerson.getText().toString();
+                        user.setText(""+ name);
+                        dialog.dismiss();
                     }
                 });
 
