@@ -18,4 +18,8 @@
     <string name="add_course_time">Course time</string>
     <string name="add_course_color">Color</string>
     <string name="add_course_ok">Add</string>
+    <string name="reminder_title">Reminder</string>
+    <string name="profile_add_person">add person</string>
+    <string name="profile_ok">OK</string>
+    <string name="profile_cancel">Cancel</string>
 </resources>

@@ -10,20 +10,20 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:background="@drawable/home_600"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="#000000"
-            android:alpha="0.3"/>
+            android:background="@color/yellow_pastel"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="250dp"-->
+            <!--android:background="#000000"-->
+            <!--android:alpha="0.3"/>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="Kourse"
-            android:textColor="#FFFFFF"
-            android:fontFamily="@font/aqua"
+            android:textColor="#424242"
+            android:fontFamily="@font/lobster"
             android:textSize="45sp"/>
 
     </RelativeLayout>
@@ -32,7 +32,7 @@
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5555"
+        android:text=""
         android:textColor="@color/white"
         android:textSize="60sp"/>
 
