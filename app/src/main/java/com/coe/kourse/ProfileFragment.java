@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ public class ProfileFragment extends Fragment {
     Button dialogButton;
     TextView user;
     String name;
+    LinearLayout dynamicview;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,8 +51,22 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         name = namePerson.getText().toString();
-                        user.setText(""+ name);
+                        //user.setText(""+ name);
                         dialog.dismiss();
+
+                        dynamicview = view.findViewById(R.id.llayout);
+                        LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                        for(int i=0;i<1;i++){
+                            Button btn = new Button(getActivity());
+                            btn.setId(i+1);
+                            btn.setText(name);
+                            btn.setLayoutParams(lprams);
+                            btn.setAllCaps(false);
+                            dynamicview.addView(btn);
+                        }
                     }
                 });
 

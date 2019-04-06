@@ -32,7 +32,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         fab = view.findViewById(R.id.fab);
-        tview = view.findViewById(R.id.tv);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,8 +40,6 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        tview.setText(myresult);
 
         return view;
     }
