@@ -22,4 +22,5 @@
     <string name="profile_add_person">add person</string>
     <string name="profile_ok">OK</string>
     <string name="profile_cancel">Cancel</string>
+    <string name="email">EMAIL</string>
 </resources>

@@ -21,6 +21,55 @@
             "package_name": "com.coe.kourse",
             "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
           }
+        },
+        {
+          "client_id": "962818880211-52mrdvjm8qfmhdgjq42o3cnlralun3ni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coe.kourse",
+            "certificate_hash": "6adeb98f502458b3b593c7f1c16c5f187f41a0f0"
+          }
+        },
+        {
+          "client_id": "962818880211-pi2hi2rdi64hso3ad63frgf4421t5r9l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3lP9Z0r-lftHCD2OtBqSOT-dFpnKhIvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962818880211-pi2hi2rdi64hso3ad63frgf4421t5r9l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962818880211:android:1e274291181df0bb",
+        "android_client_info": {
+          "package_name": "kourse.kku.ac.th.firebaseauth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962818880211-igt879mmi7tcgja2gtib6g7kqhc4rl4g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kourse.kku.ac.th.firebaseauth",
+            "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
+          }
+        },
+        {
+          "client_id": "962818880211-pi2hi2rdi64hso3ad63frgf4421t5r9l.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -54,6 +103,10 @@
             "package_name": "kourse.kku.ac.th.firebaselogin",
             "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
           }
+        },
+        {
+          "client_id": "962818880211-pi2hi2rdi64hso3ad63frgf4421t5r9l.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
