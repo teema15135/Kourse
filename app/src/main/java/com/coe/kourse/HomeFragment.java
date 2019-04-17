@@ -21,7 +21,6 @@ public class HomeFragment extends Fragment {
 
 
     FloatingActionButton fab;
-    TextView tview;
     String myresult = "";
 
     @Nullable
