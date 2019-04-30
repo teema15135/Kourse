@@ -3,63 +3,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/llayout"
+    android:background="@color/light_green"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:background="@color/blue_dark"/>
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-            <ImageView
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_img"
-                android:layout_marginTop="30dp"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/user"/>
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/user" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp" />
+
                 <TextView
                     android:layout_marginTop="16dp"
-                    android:fontFamily="@font/aqua"
-                    android:id="@+id/profile_gmail"
+                    android:id="@+id/curName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="chompu.luffy@gmail.com" />
+                    android:textSize="18dp"
+                    android:text="" />
             </LinearLayout>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/logOutbtn"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Out"
+            android:textAllCaps="false" />
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/profile_btn_person"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="bottom|end"
-        android:background="@color/green_pastel"
-        android:alpha="0.6"
-        android:text="@string/profile_add_person"
-        android:textAllCaps="false"/>
-
-    <TextView
-        android:id="@+id/user1"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
