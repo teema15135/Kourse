@@ -1,5 +1,6 @@
 package com.coe.kourse;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -9,6 +10,10 @@ public class User {
 
     public String id;
     public String name;
+
+    public User() {
+        super();
+    }
 
     public User(String name) {
         super();
