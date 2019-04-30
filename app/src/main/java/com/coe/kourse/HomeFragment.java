@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -156,13 +157,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void leftUser() {
         if (currentUserIndex == 0) return;
-        changeUser(currentUserIndex - 1);
+        changeUser(currentUserIndex - 1, 1);
         currentUserIndex -= 1;
     }
 
     private void rightUser() {
         if (currentUserIndex == maxFragment - 1) return;
-        changeUser(currentUserIndex + 1);
+        changeUser(currentUserIndex + 1, 0);
         currentUserIndex += 1;
     }
 
@@ -171,6 +172,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Fragment selectedFragment = userFragmentList.get(index);
         userFrameUnbonded = false;
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, selectedFragment).commit();
+    }
+
+    private void changeUser(int index, int direction) {
+        Log.d(TAG, "Change User to " + index);
+        Fragment selectedFragment = userFragmentList.get(index);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        if (direction == 1)
+            transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
+        else
+            transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
+        transaction.replace(R.id.fragment_sweep_container, selectedFragment);
+        transaction.commit();
     }
 
     @Override
