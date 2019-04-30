@@ -22,19 +22,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AnotherProfileFragment extends Fragment {
 
     String TAG = "AnotherProfile";
 
+    View view;
+
     Button dialogButton;
     TextView user;
     String name;
-    LinearLayout dynamicview;
+    LinearLayout userListLinearLayout;
 
     String accountEmail, accountUID;
+
+    ValueEventListener currentListener;
+
+    ArrayList<User> userList;
 
     DatabaseReference accountRef, usersRef;
     FirebaseDatabase database;
@@ -43,26 +51,16 @@ public class AnotherProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_another_profile, container, false);
+        view = inflater.inflate(R.layout.fragment_another_profile, container, false);
 
-        database = FirebaseDatabase.getInstance();
-        accountAuth = FirebaseAuth.getInstance();
-        accountUID = accountAuth.getCurrentUser().getUid();
-        accountEmail = accountAuth.getCurrentUser().getEmail();
-
-        accountRef = database.getReference();
-        usersRef = accountRef.child("accounts").child(accountUID).child("users");
-
+        initializeFirebaseComponent();
+        initializeViews();
         updateUserList();
-
-        dialogButton = view.findViewById(R.id.a_profile_btn_person);
-        user = view.findViewById(R.id.a_user1);
 
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(getActivity());
-                //dialog.setTitle("Add person");
                 dialog.setContentView(R.layout.dialog_profile_person);
 
                 final EditText namePerson = (EditText) dialog.findViewById(R.id.profile_dialog_name);
@@ -79,6 +77,7 @@ public class AnotherProfileFragment extends Fragment {
                 buttonOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        // Push update to Firebase Database
                         name = namePerson.getText().toString();
                         User newUser = new User(name);
                         String userID = newUser.getID();
@@ -91,19 +90,7 @@ public class AnotherProfileFragment extends Fragment {
 
                         dialog.dismiss();
 
-                        dynamicview = view.findViewById(R.id.a_llayout);
-                        LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
-
-                        for(int i=0;i<1;i++){
-                            Button btn = new Button(getActivity());
-                            btn.setId(i+1);
-                            btn.setText(name);
-                            btn.setLayoutParams(lprams);
-                            btn.setAllCaps(false);
-                            dynamicview.addView(btn);
-                        }
+                        updateUserList();
                     }
                 });
 
@@ -114,15 +101,61 @@ public class AnotherProfileFragment extends Fragment {
         return view;
     }
 
+    private void initializeViews() {
+        dialogButton = view.findViewById(R.id.a_profile_btn_person);
+        userListLinearLayout = view.findViewById(R.id.userListLinearLayout);
+    }
+
+    private void initializeFirebaseComponent() {
+        database = FirebaseDatabase.getInstance();
+        accountAuth = FirebaseAuth.getInstance();
+        accountUID = accountAuth.getCurrentUser().getUid();
+        accountEmail = accountAuth.getCurrentUser().getEmail();
+
+        userList = new ArrayList<User>();
+
+        accountRef = database.getReference();
+        usersRef = accountRef.child("accounts").child(accountUID).child("users");
+    }
+
     private void updateUserList() {
-        usersRef.addValueEventListener(new ValueEventListener() {
+
+        userListLinearLayout.removeAllViewsInLayout();
+        if (currentListener != null) usersRef.removeEventListener(currentListener);
+
+        currentListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, dataSnapshot.getValue().toString());
+                for (DataSnapshot unique : dataSnapshot.getChildren()) {
+                    User user = unique.getValue(User.class);
+                    userList.add(user);
+
+                    LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                    // Create Button
+                    Button btn = new Button(getActivity());
+                    btn.setId(Integer.parseInt(user.getID().substring(4)));
+                    btn.setText(user.getName());
+                    btn.setLayoutParams(lprams);
+                    btn.setAllCaps(false);
+                    btn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+                    userListLinearLayout.addView(btn);
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+
+        usersRef.addValueEventListener(currentListener);
     }
 }
