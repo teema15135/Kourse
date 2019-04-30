@@ -11,16 +11,24 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     BottomNavigationView bottomNav;
 
+    Fragment homeFragment, calendarFragment, notificationFragment, profileFragment, anotherProfileFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        homeFragment = new HomeFragment();
+        calendarFragment = new CalendarFragment();
+        notificationFragment = new NotificationFragment();
+        profileFragment = new ProfileFragment();
+        anotherProfileFragment = new AnotherProfileFragment();
+
         bottomNav = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
+                homeFragment).commit();
     }
 
 
@@ -30,19 +38,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                selectedFragment = new HomeFragment();
+                selectedFragment = homeFragment;
                 break;
             case R.id.nav_calendar:
-                selectedFragment = new CalendarFragment();
+                selectedFragment = calendarFragment;
                 break;
             case R.id.nav_notification:
-                selectedFragment = new NotificationFragment();
+                selectedFragment = notificationFragment;
                 break;
             case R.id.nav_profile:
-                selectedFragment = new ProfileFragment();
+                selectedFragment = profileFragment;
                 break;
             case R.id.nav_another_profile:
-                selectedFragment = new AnotherProfileFragment();
+                selectedFragment = anotherProfileFragment;
                 break;
         }
 
