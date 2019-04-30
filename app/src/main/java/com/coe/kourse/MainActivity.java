@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.nav_profile:
                 selectedFragment = new ProfileFragment();
                 break;
+            case R.id.nav_another_profile:
+                selectedFragment = new AnotherProfileFragment();
+                break;
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
