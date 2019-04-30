@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +15,45 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class AnotherProfileFragment extends Fragment {
+
+    String TAG = "AnotherProfile";
 
     Button dialogButton;
     TextView user;
     String name;
     LinearLayout dynamicview;
 
+    String accountEmail, accountUID;
+
+    DatabaseReference accountRef, usersRef;
+    FirebaseDatabase database;
+    FirebaseAuth accountAuth;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_another_profile, container, false);
+
+        database = FirebaseDatabase.getInstance();
+        accountAuth = FirebaseAuth.getInstance();
+        accountUID = accountAuth.getCurrentUser().getUid();
+        accountEmail = accountAuth.getCurrentUser().getEmail();
+
+        accountRef = database.getReference();
+        usersRef = accountRef.child("accounts").child(accountUID).child("users");
+
+        updateUserList();
 
         dialogButton = view.findViewById(R.id.a_profile_btn_person);
         user = view.findViewById(R.id.a_user1);
@@ -51,7 +80,15 @@ public class AnotherProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         name = namePerson.getText().toString();
-                        //user.setText(""+ name);
+                        User newUser = new User(name);
+                        String userID = newUser.getID();
+                        DatabaseReference userRef = usersRef.child(userID);
+                        Map<String, Object> userMap = newUser.toMap();
+
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put(userID, userMap);
+                        usersRef.updateChildren(childUpdates);
+
                         dialog.dismiss();
 
                         dynamicview = view.findViewById(R.id.a_llayout);
@@ -75,5 +112,17 @@ public class AnotherProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void updateUserList() {
+        usersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 }
