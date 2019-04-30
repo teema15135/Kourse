@@ -4,14 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottomNav;
 
-    Fragment homeFragment, calendarFragment, notificationFragment, profileFragment, anotherProfileFragment;
+    Fragment homeFragment,
+            calendarFragment,
+            notificationFragment,
+            profileFragment,
+            anotherProfileFragment,
+            selectedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Fragment selectedFragment = null;
+        selectedFragment = null;
 
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
