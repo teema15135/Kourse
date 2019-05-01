@@ -2,33 +2,54 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/layout_main"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
-    <RelativeLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="@drawable/home_cover"/>
-        <!--<View-->
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/home_cover"/>
+            <!--<View-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="250dp"-->
             <!--android:background="#000000"-->
             <!--android:alpha="0.3"/>-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="Kourse"
-            android:alpha="0.6"
-            android:textColor="#ffff"
-            android:fontFamily="@font/lobster"
-            android:textSize="45sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Kourse"
+                android:textColor="#ffff"
+                android:fontFamily="@font/lobster"
+                android:textSize="45sp"/>
+        </RelativeLayout>
 
-    </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:layout_marginBottom="16dp">
+            <LinearLayout
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/layout_list">
+            </LinearLayout>
+        </ScrollView>
 
+
+    </LinearLayout>
 
 
     <android.support.design.widget.FloatingActionButton
