@@ -126,7 +126,6 @@ public class AnotherProfileFragment extends Fragment {
         currentListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, dataSnapshot.getValue().toString());
                 for (DataSnapshot unique : dataSnapshot.getChildren()) {
                     User user = unique.getValue(User.class);
                     userList.add(user);

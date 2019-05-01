@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,13 +39,36 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
+public class HomeFragment extends Fragment {
+
+    String TAG = "HomeFragment";
+    ValueEventListener currentListener;
+
+    boolean userFrameUnbonded = true;
+    String myresult = "";
+    String accountUID;
+    int maxFragment = 0;
+    int currentUserIndex = 0;
+
+    List<User> userList;
+    List<Fragment> userFragmentList;
+    ArrayList<ArrayList<Course>> allUserCourseList;
+
+    DatabaseReference accountRef, usersRef;
+    FirebaseDatabase database;
+    FirebaseAuth accountAuth;
+
+    View view;
+    FrameLayout fragment_sweep_container;
     FloatingActionButton fab;
 
-    String sCourse, sColor, sStampAmount ;
-    LinearLayout layoutList;
+    String sCourse, sColor, sStampAmount;
+    LinearLayout linearSwipe;
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
@@ -52,18 +77,16 @@ import java.util.List;
 
     private boolean isSelected = false;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         view = inflater.inflate(R.layout.fragment_home, container, false);
         maxFragment = 0;
         userFrameUnbonded = true;
         userFragmentList = new ArrayList<>();
+        allUserCourseList = new ArrayList<>();
 
         initializeFirebaseComponent();
         initializeViews();
@@ -74,37 +97,21 @@ import java.util.List;
         return view;
     }
 
-    private void addViewListeners() {
-        fab.setOnClickListener(this);
-        userLeftButton.setOnClickListener(this);
-        userRightButton.setOnClickListener(this);
-        fragment_sweep_container.setOnTouchListener(new OnSwipeTouchListener(this.getContext()) {
-            public void onSwipeTop() {
-                Log.d(TAG, "TOP Swipe");
-            }
-            public void onSwipeRight() {
-                leftUser();
-            }
-            public void onSwipeLeft() {
-                rightUser();
-            }
-            public void onSwipeBottom() {
-                Log.d(TAG, "BOTTOM Swipe");
-            }
 
-        });
+    private void initializeFirebaseComponent() {
+        database = FirebaseDatabase.getInstance();
+        accountAuth = FirebaseAuth.getInstance();
+        accountUID = accountAuth.getCurrentUser().getUid();
+
+        userList = new ArrayList<>();
+
+        accountRef = database.getReference();
+        usersRef = accountRef.child("accounts").child(accountUID).child("users");
     }
 
     private void initializeViews() {
-        fragment_sweep_container = view.findViewById(R.id.fragment_sweep_container);
-        homeSelectUserLayout = view.findViewById(R.id.homeSelectUserLayout);
+        linearSwipe = view.findViewById(R.id.linearSwipe);
         fab = view.findViewById(R.id.fab);
-        userLeftButton = view.findViewById(R.id.userLeftButton);
-        userRightButton = view.findViewById(R.id.userRightButton);
-    }
-
-        layoutList = view.findViewById(R.id.layout_list);
-
 
         widthLayout = (int) getResources().getDimension(R.dimen.l_course_width);
         heightLayout = (int) getResources().getDimension(R.dimen.l_course_height);
@@ -113,6 +120,27 @@ import java.util.List;
         paddingLeftLayout = (int) getResources().getDimensionPixelOffset(R.dimen.paddingl_course_layout);
         widthHeightStampbtn = (int) getResources().getDimension(R.dimen.stamp_width_height);
         marginStamp = (int) getResources().getDimension(R.dimen.stamp_margin);
+    }
+
+    private void addViewListeners() {
+        view.setOnTouchListener(new OnSwipeTouchListener(this.getContext()) {
+            public void onSwipeTop() {
+                Log.d(TAG, "TOP Swipe");
+            }
+
+            public void onSwipeRight() {
+                leftUser();
+            }
+
+            public void onSwipeLeft() {
+                rightUser();
+            }
+
+            public void onSwipeBottom() {
+                Log.d(TAG, "BOTTOM Swipe");
+            }
+
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +148,8 @@ import java.util.List;
 
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.dialog_add_course);
+
+                sColor = null;
 
                 nameCourse = (EditText) dialog.findViewById(R.id.add_name_edittext);
                 totalCourse = (EditText) dialog.findViewById(R.id.add_total_edittext);
@@ -218,7 +248,6 @@ import java.util.List;
                 });
 
 
-
                 // when click ok or cancel button
 
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
@@ -231,19 +260,27 @@ import java.util.List;
                 buttonOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        sCourse = nameCourse.getText().toString();
+                        sColor = (sColor == null ? "#b3d53f" : sColor);
+                        sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
+                        stampAmount = Integer.parseInt(sStampAmount);
+
+                        Course course = new Course(sCourse, sColor);
+                        User currentUser = userList.get(currentUserIndex);
+                        currentUser.addCourse(course);
+                        Map<String, Object> userMap = currentUser.toMap();
+
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put(currentUser.getID(), userMap);
+                        usersRef.updateChildren(childUpdates);
+
                         dialog.dismiss();
-
-                        createCourseElements(sColor);
-
                     }
                 });
-
                 dialog.show();
-
             }
-
-
-        return view;
+        });
     }
 
     private void leftUser() {
@@ -258,106 +295,61 @@ import java.util.List;
         currentUserIndex += 1;
     }
 
-
-    private Drawable getDrawableWithRadius(String sColor) {
-
-        GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setCornerRadii(new float[]{10, 10, 10, 10, 10, 10, 10, 10 });
-        gradientDrawable.setColor(Color.parseColor(sColor));
-        return gradientDrawable;
-
+    private void changeUser(int index) {
+        Log.d(TAG, "Change User to " + index);
+        Fragment selectedFragment = userFragmentList.get(index);
+        userFrameUnbonded = false;
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, selectedFragment).commit();
     }
 
-    private Drawable getDrawableWithRadiusStamp(String sColor) {
-
-        GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 0, 0 });
-        gradientDrawable.setColor(Color.parseColor(sColor));
-        return gradientDrawable;
-
+    private void changeUser(int index, int direction) {
+        Log.d(TAG, "Change User to " + index);
+        Fragment selectedFragment = userFragmentList.get(index);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        if (direction == 1)
+            transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
+        else
+            transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
+        transaction.replace(R.id.fragment_sweep_container, selectedFragment);
+        transaction.commit();
     }
 
+    private void updateUserList() {
+        // userListLinearLayout.removeAllViewsInLayout();
+        if (currentListener != null) usersRef.removeEventListener(currentListener);
 
+        currentListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot unique : dataSnapshot.getChildren()) {
 
+                    User user = unique.getValue(User.class);
+                    userList.add(user);
 
-    private void createCourseElements(String sColor) {
+                    // Set Fragment Content
+                    HomeUserFragment userFragment = new HomeUserFragment();
+                    userFragment.setUser(user);
 
-        sCourse  = nameCourse.getText().toString();
-        sStampAmount = totalCourse.getText().toString();
-        stampAmount = Integer.parseInt(sStampAmount);
-        LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(widthLayout, LinearLayout.LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams sublprams = new LinearLayout.LayoutParams(widthLayout, heightLayout);
-        LinearLayout.LayoutParams stamplprams = new LinearLayout.LayoutParams(widthLayout, LinearLayout.LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams stampBtnlprams = new LinearLayout.LayoutParams(widthHeightStampbtn, widthHeightStampbtn);
+                    userFragmentList.add(userFragment);
+                    Log.d(TAG, "fragment array added");
 
-        lprams.setMargins(0,marginBottomLayout,0,0);
-        stampBtnlprams.setMargins(0,0,marginStamp,marginStamp);
-
-        for(int i=0;i<1;i++){
-            //Main Layout
-            LinearLayout main = new LinearLayout(getActivity());
-            main.setOrientation(LinearLayout.VERTICAL);
-            main.setLayoutParams(lprams);
-
-            //minimize layout
-            LinearLayout row = new LinearLayout(getActivity());
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setClipToOutline(true);
-            row.setPadding(paddingLeftLayout, paddingLayout, paddingLayout, paddingLayout );
-            row.setLayoutParams(sublprams);
-            row.setBackground(getDrawableWithRadius(sColor));
-
-            TextView showCourse = new TextView(getActivity());
-            showCourse.setText(sCourse);
-            showCourse.setTextColor(Color.WHITE);
-            row.addView(showCourse);
-
-            //stamp layout
-            LinearLayout stampLayout = new LinearLayout(getActivity());
-            stampLayout.setOrientation(LinearLayout.HORIZONTAL);
-            stampLayout.setPadding(paddingLeftLayout, paddingLayout, paddingLayout, paddingLayout );
-            stampLayout.setLayoutParams(stamplprams);
-            stampLayout.setBackground(getDrawableWithRadiusStamp("#b9b0a2"));
-
-            for(int j=1 ; j <= stampAmount ; j++) {
-                String numstamp = String.valueOf(j);
-                LinearLayout stampBtnLayout = new LinearLayout(getActivity());
-                Button stampButton = new Button(getActivity());
-                stampButton.setBackgroundResource(R.drawable.stamp_unselect_white);
-                stampButton.setText(numstamp);
-                stampButton.setTextSize(10);
-                stampButton.setTextColor(Color.WHITE);
-                stampBtnLayout.setLayoutParams(stampBtnlprams);
-                stampBtnLayout.addView(stampButton);
-                stampLayout.addView(stampBtnLayout);
+                    if (userFrameUnbonded) {
+                        try {
+                            changeUser(currentUserIndex);
+                        } catch (Exception e) {
+                        }
+                    }
+                    maxFragment++;
+                    Log.d(TAG, "MaxFragment is " + maxFragment);
+                }
             }
 
-            main.addView(row);
-            main.addView(stampLayout);
-            layoutList.addView(main);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
 
-            row.setVisibility(View.VISIBLE);
-            stampLayout.setVisibility(View.GONE);
-
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isSelected) {
-                        isSelected = false;
-                        stampLayout.setVisibility(View.GONE);
-                    }
-                    else {
-                        isSelected = true;
-                        stampLayout.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
-        }
-
+        usersRef.addValueEventListener(currentListener);
     }
-
-
-
 
 }
