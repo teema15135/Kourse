@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="l_course_width">300dp</dimen>
+    <dimen name="l_course_height">45dp</dimen>
+    <dimen name="margin_course_bottom">13dp</dimen>
+    <dimen name="padding_course_layout">10dp</dimen>
+    <dimen name="paddingl_course_layout">20dp</dimen>
+    <dimen name="stamp_width_height">40dp</dimen>
+    <dimen name="stamp_margin">15dp</dimen>
+</resources>
