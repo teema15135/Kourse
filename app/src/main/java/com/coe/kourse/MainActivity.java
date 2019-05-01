@@ -4,42 +4,60 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottomNav;
+
+    Fragment homeFragment,
+            calendarFragment,
+            notificationFragment,
+            profileFragment,
+            anotherProfileFragment,
+            selectedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        homeFragment = new HomeFragment();
+        calendarFragment = new CalendarFragment();
+        notificationFragment = new NotificationFragment();
+        profileFragment = new ProfileFragment();
+        anotherProfileFragment = new AnotherProfileFragment();
+
         bottomNav = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
+                homeFragment).commit();
     }
 
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Fragment selectedFragment = null;
+        selectedFragment = null;
 
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                selectedFragment = new HomeFragment();
+                selectedFragment = homeFragment;
                 break;
             case R.id.nav_calendar:
-                selectedFragment = new CalendarFragment();
+                selectedFragment = calendarFragment;
                 break;
             case R.id.nav_notification:
-                selectedFragment = new NotificationFragment();
+                selectedFragment = notificationFragment;
                 break;
             case R.id.nav_profile:
-                selectedFragment = new ProfileFragment();
+                selectedFragment = profileFragment;
+                break;
+            case R.id.nav_another_profile:
+                selectedFragment = anotherProfileFragment;
                 break;
         }
 
