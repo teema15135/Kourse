@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 public class HomeUserFragment extends Fragment {
 
+    String TAG = "HomeUserFragment";
+
     String userName;
     ArrayList<Course> courses;
 
@@ -33,9 +35,15 @@ public class HomeUserFragment extends Fragment {
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
 
-    public void setUser(User user) {
-        this.userName = user.getName();
-        this.courses = user.getCourses();
+    public void setUser(@NonNull User user) {
+        try {
+            while(user == null);
+            Log.d(TAG, "Done wait for null");
+            this.userName = user.getName();
+            this.courses = user.getCourses();
+        } catch (NullPointerException e) {
+            Log.d(TAG, "NullPointer for " + user.toString());
+        }
     }
 
     @Nullable
