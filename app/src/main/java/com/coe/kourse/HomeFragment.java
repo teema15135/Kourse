@@ -295,6 +295,13 @@ public class HomeFragment extends Fragment {
         currentUserIndex += 1;
     }
 
+    private void fetchUser() {
+        Log.d(TAG, "Refreshing user");
+        Fragment fragment = userFragmentList.get(currentUserIndex);
+        userFrameUnbonded = false;
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, fragment).commit();
+    }
+
     private void changeUser(int index) {
         Log.d(TAG, "Change User to " + index);
         Fragment selectedFragment = userFragmentList.get(index);
@@ -321,10 +328,13 @@ public class HomeFragment extends Fragment {
         currentListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userFragmentList = new ArrayList<>();
                 for (DataSnapshot unique : dataSnapshot.getChildren()) {
 
                     User user = unique.getValue(User.class);
                     userList.add(user);
+
+                    Log.d(TAG, user.toString());
 
                     // Set Fragment Content
                     HomeUserFragment userFragment = new HomeUserFragment();
@@ -333,14 +343,18 @@ public class HomeFragment extends Fragment {
                     userFragmentList.add(userFragment);
                     Log.d(TAG, "fragment array added");
 
-                    if (userFrameUnbonded) {
-                        try {
-                            changeUser(currentUserIndex);
-                        } catch (Exception e) {
-                        }
-                    }
+
                     maxFragment++;
                     Log.d(TAG, "MaxFragment is " + maxFragment);
+                }
+
+                if (userFrameUnbonded) {
+                    try {
+                        changeUser(currentUserIndex);
+                    } catch (Exception e) {
+                    }
+                } else {
+                    fetchUser();
                 }
             }
 
