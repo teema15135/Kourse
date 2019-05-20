@@ -105,7 +105,7 @@ public class HomeUserFragment extends Fragment {
         main.setPadding(0, paddingLayout, 0, 0);
         main.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        //minimize layout
+        //minimize layout (pop-up layout)
         LinearLayout row = new LinearLayout(getActivity());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setClipToOutline(true);
