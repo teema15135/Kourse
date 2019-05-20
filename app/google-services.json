@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "962818880211-5a8d8jl96nm8itmsdjhg59miph5uqclu.apps.googleusercontent.com",
+          "client_id": "962818880211-bq1vo9tpine85290oiqnd9jqjs0oljmt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.coe.kourse",
-            "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
+            "certificate_hash": "81107767abc631f646e04feff1d665c2efd792cd"
+          }
+        },
+        {
+          "client_id": "962818880211-9hjp1ev44m66s0tkm2jr36hcivsf0t59.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coe.kourse",
+            "certificate_hash": "2a84fa9dc1fcb34ebee25cef4764db54684f8d6d"
           }
         },
         {
@@ -31,11 +39,11 @@
           }
         },
         {
-          "client_id": "962818880211-9hjp1ev44m66s0tkm2jr36hcivsf0t59.apps.googleusercontent.com",
+          "client_id": "962818880211-5a8d8jl96nm8itmsdjhg59miph5uqclu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.coe.kourse",
-            "certificate_hash": "2a84fa9dc1fcb34ebee25cef4764db54684f8d6d"
+            "certificate_hash": "1ddb03087a1f55170c8eff524fe0732e7d374f1a"
           }
         },
         {
