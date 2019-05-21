@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         homeFragment = new HomeFragment();
         calendarFragment = new CalendarFragment();
         notificationFragment = new NotificationFragment();
-        profileFragment = new ProfileFragment();
         anotherProfileFragment = new AnotherProfileFragment();
 
         bottomNav = (BottomNavigationView)findViewById(R.id.bottom_navigation);
@@ -52,9 +51,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             case R.id.nav_notification:
                 selectedFragment = notificationFragment;
-                break;
-            case R.id.nav_profile:
-                selectedFragment = profileFragment;
                 break;
             case R.id.nav_another_profile:
                 selectedFragment = anotherProfileFragment;
