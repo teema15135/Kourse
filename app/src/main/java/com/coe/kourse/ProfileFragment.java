@@ -35,7 +35,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profileImg = view.findViewById(R.id.profile_img);
+
         curName = (TextView)view.findViewById(R.id.curName);
         logOutbtn = (Button)view.findViewById(R.id.logOutbtn);
 
