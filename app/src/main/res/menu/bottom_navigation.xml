@@ -17,6 +17,11 @@
         android:title="@string/reminder_title"/>
 
     <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="@string/profile"/>
+
+    <item
         android:id="@+id/nav_another_profile"
         android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="@string/profile"/>

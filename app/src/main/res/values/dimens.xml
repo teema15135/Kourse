@@ -7,4 +7,8 @@
     <dimen name="paddingl_course_layout">20dp</dimen>
     <dimen name="stamp_width_height">40dp</dimen>
     <dimen name="stamp_margin">15dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="activity_margin">16dp</dimen>
+    <dimen name="slug_padding">20dp</dimen>
 </resources>
