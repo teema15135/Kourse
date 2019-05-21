@@ -1,6 +1,8 @@
 package com.coe.kourse;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -41,6 +44,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,12 +79,16 @@ public class HomeFragment extends Fragment {
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
-    EditText nameCourse, totalCourse;
+    EditText nameCourse, totalCourse, payAmount, payDate;
     RadioGroup typeRadioGroup;
     RadioButton nonFixTimeTypeRadioButton, fixTimeTypeRadioButton;
     int stampAmount;
 
     private boolean isSelected = false;
+
+    boolean datePicked;
+    Calendar calendar;
+    Date payDay;
 
     @Nullable
     @Override
@@ -159,6 +168,8 @@ public class HomeFragment extends Fragment {
                 fixTimeTypeRadioButton = (RadioButton) dialog.findViewById(R.id.fixTimeTypeRadioButton);
                 nameCourse = (EditText) dialog.findViewById(R.id.add_name_edittext);
                 totalCourse = (EditText) dialog.findViewById(R.id.add_total_edittext);
+                payAmount = (EditText) dialog.findViewById(R.id.add_pay_edittext);
+                payDate = (EditText) dialog.findViewById(R.id.add_due_edittext);
                 Button buttonCancel = (Button) dialog.findViewById(R.id.home_btn_cancel);
                 Button buttonOK = (Button) dialog.findViewById(R.id.home_btn_ok);
 
@@ -253,6 +264,28 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                datePicked = false;
+                payDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                datePicked = true;
+                                payDay = new Date();
+                                payDay.setYear(year);
+                                payDay.setMonth(month);
+                                payDay.setDate(dayOfMonth);
+                                payDay.setHours(1);
+                            }
+                        };
+                        DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DATE));
+                        dpd.show();
+                    }
+                });
 
                 // when click ok or cancel button
 
@@ -269,12 +302,14 @@ public class HomeFragment extends Fragment {
 
                         int timeType = 0;
                         if (fixTimeTypeRadioButton.isChecked()) timeType = 1;
+
                         sCourse = nameCourse.getText().toString();
                         sColor = (sColor == null ? "#b3d53f" : sColor);
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
 
                         Course course = new Course(sCourse, sColor, stampAmount, timeType);
+
                         User currentUser = userList.get(currentUserIndex);
                         currentUser.addCourse(course);
                         Map<String, Object> userMap = currentUser.toMap();
@@ -282,6 +317,14 @@ public class HomeFragment extends Fragment {
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put(currentUser.getID(), userMap);
                         usersRef.updateChildren(childUpdates);
+
+                        if (!(payAmount.getText().toString().isEmpty() || payDate.getText().toString().isEmpty())) {
+                            /*
+                             * Set reminder here
+                             * using payDay (Date class) to get date
+                             *
+                             */
+                        }
 
                         dialog.dismiss();
                     }
