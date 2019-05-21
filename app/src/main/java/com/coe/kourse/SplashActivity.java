@@ -18,6 +18,14 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInsantanceState);
         setContentView(R.layout.activity_splash);
 
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    }
+                },
+                3000);
+
         splashGif = (GifImageView)findViewById(R.id.splashGif);
 
         splashGif.setOnClickListener(new View.OnClickListener() {

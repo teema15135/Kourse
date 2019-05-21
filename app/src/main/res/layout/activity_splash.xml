@@ -9,7 +9,7 @@
         android:id="@+id/splashGif"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/circle_splash"/>
+        android:src="@drawable/logo"/>
 
 
 </RelativeLayout>
