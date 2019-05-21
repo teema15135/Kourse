@@ -1,44 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/a_llayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/a_llayout"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <View
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:background="@color/blue_dark"/>
+            android:background="@color/blue_dark" />
 
         <LinearLayout
-            android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="220dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/a_profile_img"
-                android:layout_marginTop="30dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:background="@drawable/user"/>
+                android:layout_marginTop="30dp"
+                android:background="@drawable/user" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/a_profile_gmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/aqua"
+                android:gravity="center"
+                android:text="chompu.luffy@gmail.com" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/logoutImageButton"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/logoutTextView"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/logout"
+                    android:scaleType="fitCenter"
+                    />
+
                 <TextView
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/aqua"
-                    android:id="@+id/a_profile_gmail"
-                    android:layout_width="match_parent"
+                    android:id="@+id/logoutTextView"
+                    android:text="Logout"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="chompu.luffy@gmail.com" />
-            </LinearLayout>
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    />
+
+            </RelativeLayout>
         </LinearLayout>
 
     </RelativeLayout>
@@ -48,19 +72,20 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="bottom|end"
-        android:background="@color/green_pastel"
         android:alpha="0.6"
+        android:background="@color/green_pastel"
         android:text="@string/profile_add_person"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:id="@+id/userListLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
     </ScrollView>
 
 </LinearLayout>

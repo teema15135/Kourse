@@ -1,6 +1,7 @@
 package com.coe.kourse;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,7 +40,8 @@ public class AnotherProfileFragment extends Fragment {
 
     CircleImageView profileImage;
     Button dialogButton;
-    TextView user;
+    ImageView logoutImage;
+    TextView user, logoutTextView;
     String name;
     LinearLayout userListLinearLayout;
 
@@ -60,6 +62,7 @@ public class AnotherProfileFragment extends Fragment {
 
         initializeFirebaseComponent();
         initializeViews();
+        addViewListeners();
         updateUserList();
 
         updateProfileInfo();
@@ -110,6 +113,8 @@ public class AnotherProfileFragment extends Fragment {
 
     private void initializeViews() {
         profileImage = view.findViewById(R.id.a_profile_img);
+        logoutImage = view.findViewById(R.id.logoutImageButton);
+        logoutTextView = view.findViewById(R.id.logoutTextView);
         dialogButton = view.findViewById(R.id.a_profile_btn_person);
         userListLinearLayout = view.findViewById(R.id.userListLinearLayout);
         user = view.findViewById(R.id.a_profile_gmail);
@@ -127,6 +132,18 @@ public class AnotherProfileFragment extends Fragment {
 
         accountRef = database.getReference();
         usersRef = accountRef.child("accounts").child(accountUID).child("users");
+    }
+
+    private void addViewListeners() {
+        View.OnClickListener logoutListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                accountAuth.signOut();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+        };
+        logoutTextView.setOnClickListener(logoutListener);
+        logoutImage.setOnClickListener(logoutListener);
     }
 
     private void updateProfileInfo() {
