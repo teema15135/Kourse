@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +22,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AnotherProfileFragment extends Fragment {
 
@@ -33,12 +37,13 @@ public class AnotherProfileFragment extends Fragment {
 
     View view;
 
+    CircleImageView profileImage;
     Button dialogButton;
     TextView user;
     String name;
     LinearLayout userListLinearLayout;
 
-    String accountEmail, accountUID;
+    String accountEmail, accountUID, accountName, accountURL;
 
     ValueEventListener currentListener;
 
@@ -56,6 +61,8 @@ public class AnotherProfileFragment extends Fragment {
         initializeFirebaseComponent();
         initializeViews();
         updateUserList();
+
+        updateProfileInfo();
 
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,8 +109,10 @@ public class AnotherProfileFragment extends Fragment {
     }
 
     private void initializeViews() {
+        profileImage = view.findViewById(R.id.a_profile_img);
         dialogButton = view.findViewById(R.id.a_profile_btn_person);
         userListLinearLayout = view.findViewById(R.id.userListLinearLayout);
+        user = view.findViewById(R.id.a_profile_gmail);
     }
 
     private void initializeFirebaseComponent() {
@@ -111,11 +120,18 @@ public class AnotherProfileFragment extends Fragment {
         accountAuth = FirebaseAuth.getInstance();
         accountUID = accountAuth.getCurrentUser().getUid();
         accountEmail = accountAuth.getCurrentUser().getEmail();
+        accountName = accountAuth.getCurrentUser().getDisplayName();
+        accountURL = accountAuth.getCurrentUser().getPhotoUrl().toString();
 
         userList = new ArrayList<User>();
 
         accountRef = database.getReference();
         usersRef = accountRef.child("accounts").child(accountUID).child("users");
+    }
+
+    private void updateProfileInfo() {
+        user.setText(accountName);
+        Picasso.with(view.getContext()).load(accountURL).into(profileImage);
     }
 
     private void updateUserList() {

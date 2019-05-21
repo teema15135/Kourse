@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:orientation="vertical">
-            <ImageView
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/a_profile_img"
                 android:layout_marginTop="30dp"
                 android:layout_width="100dp"
@@ -26,18 +27,16 @@
                 android:background="@drawable/user"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp" />
                 <TextView
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/aqua"
                     android:id="@+id/a_profile_gmail"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="chompu.luffy@gmail.com" />
             </LinearLayout>
         </LinearLayout>
