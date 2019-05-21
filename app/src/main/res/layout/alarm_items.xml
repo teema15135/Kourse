@@ -30,7 +30,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:layout_height="wrap_content"
-            android:textColor="@color/abc_primary_text_material_dark"
+            android:textColor="@android:color/black"
             tools:text="Title"
             android:textSize="20sp"/>
 
@@ -41,7 +41,7 @@
             android:singleLine="true"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:textColor="@color/abc_secondary_text_material_dark"
+            android:textColor="@android:color/black"
             tools:text="Date and Time"/>
 
         <TextView
@@ -51,7 +51,7 @@
             android:singleLine="true"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:textColor="@color/abc_secondary_text_material_dark"
+            android:textColor="@android:color/black"
             tools:text="Repeat No and Type"/>
 
     </LinearLayout>

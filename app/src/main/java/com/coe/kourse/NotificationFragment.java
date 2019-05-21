@@ -47,7 +47,7 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
     AlarmReminderDbHelper alarmReminderDbHelper = new AlarmReminderDbHelper(getActivity());
     ListView reminderListView;
     ProgressDialog prgDialog;
-    TextView reminderText;
+//    TextView reminderText;
     private String alarmTitle = "";
     private static final int VEHICLE_LOADER = 0;
 
@@ -63,7 +63,7 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
 
         reminderListView = (ListView) view.findViewById(R.id.list);
-        reminderText = (TextView) view.findViewById(R.id.reminderText);
+//        reminderText = (TextView) view.findViewById(R.id.reminderText);
 
 
         View emptyView = view.findViewById(R.id.empty_view);
@@ -132,9 +132,9 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         mCursorAdapter.swapCursor(cursor);
         if (cursor.getCount() > 0){
-            reminderText.setVisibility(View.VISIBLE);
+//            reminderText.setVisibility(View.VISIBLE);
         }else{
-            reminderText.setVisibility(View.INVISIBLE);
+//            reminderText.setVisibility(View.INVISIBLE);
         }
 
     }
