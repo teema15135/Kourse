@@ -16,7 +16,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     Fragment homeFragment,
             calendarFragment,
             notificationFragment,
-            profileFragment,
             anotherProfileFragment,
             selectedFragment;
 
