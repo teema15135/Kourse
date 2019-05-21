@@ -28,6 +28,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,8 @@ public class HomeFragment extends Fragment {
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
     EditText nameCourse, totalCourse;
+    RadioGroup typeRadioGroup;
+    RadioButton nonFixTimeTypeRadioButton, fixTimeTypeRadioButton;
     int stampAmount;
 
     private boolean isSelected = false;
@@ -151,6 +155,8 @@ public class HomeFragment extends Fragment {
 
                 sColor = null;
 
+                nonFixTimeTypeRadioButton = (RadioButton) dialog.findViewById(R.id.nonFixTimeTypeRadioButton);
+                fixTimeTypeRadioButton = (RadioButton) dialog.findViewById(R.id.fixTimeTypeRadioButton);
                 nameCourse = (EditText) dialog.findViewById(R.id.add_name_edittext);
                 totalCourse = (EditText) dialog.findViewById(R.id.add_total_edittext);
                 Button buttonCancel = (Button) dialog.findViewById(R.id.home_btn_cancel);
@@ -261,12 +267,14 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 
+                        int timeType = 0;
+                        if (fixTimeTypeRadioButton.isChecked()) timeType = 1;
                         sCourse = nameCourse.getText().toString();
                         sColor = (sColor == null ? "#b3d53f" : sColor);
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
 
-                        Course course = new Course(sCourse, sColor);
+                        Course course = new Course(sCourse, sColor, stampAmount, timeType);
                         User currentUser = userList.get(currentUserIndex);
                         currentUser.addCourse(course);
                         Map<String, Object> userMap = currentUser.toMap();

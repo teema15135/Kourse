@@ -83,12 +83,12 @@ public class HomeUserFragment extends Fragment {
         scrollView.removeAllViews();
         for( Course course : this.courses ) {
             if ( course.getName().equals("N/A") ) continue;
-            createCourseElements(contentView, course.getName(), course.getColor(), "", 3);
+            createCourseElements(contentView, course.getName(), course.getColor(), course.getAttend(), course.getTotal());
         }
         scrollView.addView(contentView);
     }
 
-    private void createCourseElements(LinearLayout main, String sCourse, String sColor, String sStampAmount, int stampAmount) {
+    private void createCourseElements(LinearLayout main, String sCourse, String sColor, int stampAttend, int stampAmount) {
 
         LinearLayout.LayoutParams mainPrams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(widthLayout, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -96,14 +96,18 @@ public class HomeUserFragment extends Fragment {
         LinearLayout.LayoutParams stamplprams = new LinearLayout.LayoutParams(widthLayout, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams stampBtnlprams = new LinearLayout.LayoutParams(widthHeightStampbtn, widthHeightStampbtn);
 
+        LinearLayout margin = new LinearLayout(getActivity());
+        margin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, marginStamp));
+
         lprams.setMargins(0, marginBottomLayout, 0, 0);
         stampBtnlprams.setMargins(0, 0, marginStamp, marginStamp);
+        mainPrams.setMargins(0, marginBottomLayout, 0, 0);
 
         //Main Layout
         main.setOrientation(LinearLayout.VERTICAL);
-        main.setLayoutParams(mainPrams);
-        main.setPadding(0, paddingLayout, 0, 0);
+        main.setPadding(0, paddingLayout, 0, paddingLayout);
         main.setGravity(Gravity.CENTER_HORIZONTAL);
+        main.setLayoutParams(mainPrams);
 
         //minimize layout (pop-up layout)
         LinearLayout row = new LinearLayout(getActivity());
@@ -118,39 +122,67 @@ public class HomeUserFragment extends Fragment {
         showCourse.setTextColor(Color.WHITE);
         row.addView(showCourse);
 
-        //stamp layout
-        LinearLayout stampLayout = new LinearLayout(getActivity());
-        stampLayout.setOrientation(LinearLayout.HORIZONTAL);
-        stampLayout.setPadding(paddingLeftLayout, paddingLayout, paddingLayout, paddingLayout);
-        stampLayout.setLayoutParams(stamplprams);
-        stampLayout.setBackground(getDrawableWithRadiusStamp("#b9b0a2"));
+        int rowOfStamp = stampAmount / 5;
+        if (stampAmount % 5 != 0) rowOfStamp++;
 
-        for (int j = 1; j <= stampAmount; j++) {
-            String numstamp = String.valueOf(j);
-            LinearLayout stampBtnLayout = new LinearLayout(getActivity());
-            Button stampButton = new Button(getActivity());
-            stampButton.setBackgroundResource(R.drawable.stamp_unselect_white);
-            stampButton.setText(numstamp);
-            stampButton.setTextSize(10);
-            stampButton.setTextColor(Color.WHITE);
-            stampBtnLayout.setLayoutParams(stampBtnlprams);
-            stampBtnLayout.addView(stampButton);
-            stampLayout.addView(stampBtnLayout);
+        LinearLayout allStampLayout = new LinearLayout(getActivity());
+        allStampLayout.setOrientation(LinearLayout.VERTICAL);
+        allStampLayout.setPadding(0, paddingLayout, paddingLayout, paddingLayout);
+        allStampLayout.setLayoutParams(stamplprams);
+        allStampLayout.setBackground(getDrawableWithRadiusStamp("#b9b0a2"));
+
+        for (int i = 0; i < rowOfStamp; i++) {
+
+            //stamp layout
+            LinearLayout stampLayout = new LinearLayout(getActivity());
+            stampLayout.setOrientation(LinearLayout.HORIZONTAL);
+            stampLayout.setPadding(paddingLeftLayout, paddingLayout, paddingLayout, paddingLayout);
+            stampLayout.setLayoutParams(stamplprams);
+            stampLayout.setBackground(getDrawableWithRadiusStamp("#b9b0a2"));
+
+            for (int j = 1; j <= 5; j++) {
+                int numStamp = i * 5 + j;
+                LinearLayout stampBtnLayout = new LinearLayout(getActivity());
+                Button stampButton = new Button(getActivity());
+                if (numStamp > stampAttend) {
+                    stampButton.setBackgroundResource(R.drawable.stamp_unselect_white);
+                } else {
+                    // Must change to attended stamp
+                    stampButton.setBackgroundResource(R.drawable.stamp_unselect_white);
+                }
+                stampButton.setText(Integer.toString(numStamp));
+                stampButton.setTextSize(10);
+                stampButton.setTextColor(Color.WHITE);
+                stampBtnLayout.setLayoutParams(stampBtnlprams);
+                stampBtnLayout.addView(stampButton);
+                stampLayout.addView(stampBtnLayout);
+                if (numStamp == stampAttend + 1)
+                    stampButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            /* Increase the attend */
+                        }
+                    });
+                if (numStamp == stampAmount)
+                    break;
+            }
+            allStampLayout.addView(stampLayout);
         }
 
         main.addView(row);
-        main.addView(stampLayout);
+        main.addView(allStampLayout);
+        main.addView(margin);
 
         row.setVisibility(View.VISIBLE);
-        stampLayout.setVisibility(View.GONE);
+        allStampLayout.setVisibility(View.GONE);
 
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (stampLayout.getVisibility() == View.VISIBLE) {
-                    stampLayout.setVisibility(View.GONE);
+                if (allStampLayout.getVisibility() == View.VISIBLE) {
+                    allStampLayout.setVisibility(View.GONE);
                 } else {
-                    stampLayout.setVisibility(View.VISIBLE);
+                    allStampLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
