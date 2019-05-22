@@ -81,6 +81,7 @@ public class HomeFragment extends Fragment {
     FrameLayout fragment_sweep_container;
     FloatingActionButton fab;
     ProgressBar homeLoadingProgressBar;
+    LinearLayout bulletPageIndicator;
 
     String sCourse, sColor, sStampAmount;
     LinearLayout linearSwipe;
@@ -135,6 +136,7 @@ public class HomeFragment extends Fragment {
         usernameHomeTextView = view.findViewById(R.id.usernameHomeTextView);
         fab = view.findViewById(R.id.fab);
         homeLoadingProgressBar = view.findViewById(R.id.homeLoadingProgressBar);
+        bulletPageIndicator = view.findViewById(R.id.bulletPageIndicator);
 
         textAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.enter_from_left);
 
@@ -350,6 +352,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void updateBullet() {
+        bulletPageIndicator.removeAllViews();
+        int numBullet = userFragmentList.size();
+        for(int i = 0; i < numBullet; i++) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setPadding(8, 0, 8, 0);
+            imageView.setImageResource((i == currentUserIndex ? R.drawable.bullet_selected : R.drawable.bullet_unselected));
+            bulletPageIndicator.addView(imageView);
+        }
+    }
+
     private void updateBannerName() {
         usernameHomeTextView.setText(userList.get(currentUserIndex).getName());
     }
@@ -359,6 +372,7 @@ public class HomeFragment extends Fragment {
         changeUser(currentUserIndex - 1, 1);
         currentUserIndex -= 1;
         updateBannerName();
+        updateBullet();
     }
 
     private void rightUser() {
@@ -366,6 +380,7 @@ public class HomeFragment extends Fragment {
         changeUser(currentUserIndex + 1, 0);
         currentUserIndex += 1;
         updateBannerName();
+        updateBullet();
     }
 
     private void fetchUser() {
@@ -374,6 +389,7 @@ public class HomeFragment extends Fragment {
         userFrameUnbonded = false;
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, fragment).commit();
         updateBannerName();
+        updateBullet();
     }
 
     private void changeUser(int index) {
@@ -425,6 +441,7 @@ public class HomeFragment extends Fragment {
                     try {
                         changeUser(currentUserIndex);
                         updateBannerName();
+                        updateBullet();
                         homeLoadingProgressBar.setVisibility(View.INVISIBLE);
                     } catch (Exception e) {
                     }
