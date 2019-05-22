@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:agendaCalendar="http://schemas.android.com/tools">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/blue_pastel" />
+        android:background="@color/red_pastel" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,28 +18,77 @@
         android:orientation="vertical"
         android:layout_centerHorizontal="true">
 
-        <com.github.sundeepk.compactcalendarview.CompactCalendarView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/compactcalendar_view"
-            android:layout_marginTop="16dp"
-            android:layout_width="fill_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_height="250dp"
-            app:compactCalendarTargetHeight="250dp"
-            app:compactCalendarTextSize="12sp"
-            app:compactCalendarBackgroundColor="#ffe95451"
-            app:compactCalendarTextColor="#fff"
-            app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
-            app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
-            app:compactCalendarMultiEventIndicatorColor="#fff"
-            />
+        <LinearLayout
 
+            android:background="@drawable/radius_bg_calendar"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_marginLeft="26dp"
+                android:layout_marginRight="26dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginTop="16dp"
+                    android:textSize="18dp"
+                    android:text="@string/u"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    />
+
+                <TextView
+                    android:id="@+id/monthtv"
+                    android:layout_marginTop="16dp"
+                    android:textSize="18dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Month"
+                    />
+
+                <TextView
+                    android:layout_marginTop="16dp"
+                    android:textSize="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=">"
+                    />
+
+            </RelativeLayout>
+
+            <com.github.sundeepk.compactcalendarview.CompactCalendarView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/compactcalendar_view"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="26dp"
+                android:layout_marginRight="26dp"
+                android:layout_marginBottom="26dp"
+                android:layout_width="fill_parent"
+                android:layout_height="220dp"
+                app:compactCalendarTargetHeight="250dp"
+                app:compactCalendarTextSize="12sp"
+                app:compactCalendarBackgroundColor="#fff"
+                app:compactCalendarTextColor="#000"
+                app:compactCalendarCurrentSelectedDayBackgroundColor="#e0e0e0"
+                app:compactCalendarCurrentDayBackgroundColor="@color/red_pastel"
+                app:compactCalendarMultiEventIndicatorColor="@color/red_pastel"
+                />
+
+        </LinearLayout>
+>
         <ListView
             android:id="@+id/listView"
             android:divider="@android:color/white"
             android:dividerHeight="8dp"
-            android:layout_margin="16dp"
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </ListView>
