@@ -2,12 +2,15 @@ package com.coe.kourse;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +18,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +45,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.coe.kourse.data.AlarmReminderContract;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,6 +67,7 @@ public class HomeFragment extends Fragment {
     final String[] MONTH_NAME = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     ValueEventListener currentListener;
+    private static final int VEHICLE_LOADER = 0;
 
     boolean userFrameUnbonded = true;
     String myresult = "";
@@ -293,7 +301,7 @@ public class HomeFragment extends Fragment {
                                 payDay.setMonth(month);
                                 payDay.setDate(dayOfMonth);
                                 payDay.setHours(1);
-                                payDate.setText(payDay.getDay() + " " + MONTH_NAME[payDay.getMonth()] + " " + payDay.getYear());
+                                payDate.setText(payDay.getDay() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
                             }
                         };
                         DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
@@ -326,6 +334,9 @@ public class HomeFragment extends Fragment {
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
 
+                        String sPayAmount = payAmount.getText().toString();
+                        String sPayDate = payDate.getText().toString();
+
                         Course course = new Course(sCourse, sColor, stampAmount, timeType);
 
                         User currentUser = userList.get(currentUserIndex);
@@ -337,11 +348,11 @@ public class HomeFragment extends Fragment {
                         usersRef.updateChildren(childUpdates);
 
                         if (!(payAmount.getText().toString().isEmpty() || payDate.getText().toString().isEmpty())) {
-                            /*
-                             * Set reminder here
-                             * using payDay (Date class) to get date
-                             *
-                             */
+                           /*
+                            *
+                            *
+                            *
+                            */
                         }
 
                         dialog.dismiss();
