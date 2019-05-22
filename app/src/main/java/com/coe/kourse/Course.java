@@ -12,6 +12,9 @@ public class Course {
     public String name;
     public String color;
 
+    public String date;
+    public String time;
+
     public int total;
     public int attend;
 

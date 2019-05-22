@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +46,9 @@ public class CalendarFragment extends Fragment {
     Integer rColor;
     Long rDate;
     String rdata;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference rootRef = database.getReference();
 
     @Nullable
     @Override
@@ -89,6 +94,9 @@ public class CalendarFragment extends Fragment {
             }
 
         });
+
+
+
         return view;
     }
 
@@ -129,6 +137,11 @@ public class CalendarFragment extends Fragment {
 
     private void createEvent() {
         Event ev = new Event(rColor, rDate, rdata);
+        compactCalendarView.addEvent(ev);
+    }
+
+    private void createEvent(Integer rColor, long rDate, String rData) {
+        Event ev = new Event(rColor, rDate, rData);
         compactCalendarView.addEvent(ev);
     }
 }
