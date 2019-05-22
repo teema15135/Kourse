@@ -29,14 +29,6 @@
         android:layout_alignParentRight="true"
         />
 
-    <!--<TextView-->
-        <!--android:id="@+id/reminderText"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:padding="16dp"-->
-        <!--android:layout_below="@+id/toolbar"-->
-        <!--android:textStyle="bold"-->
-        <!--android:text=""/>-->
     <ListView
         android:id="@+id/list"
         android:background="@android:color/white"

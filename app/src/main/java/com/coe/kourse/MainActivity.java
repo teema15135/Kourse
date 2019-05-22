@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     static boolean isHome = false;
 
-    Fragment homeFragment,
+     static Fragment homeFragment,
             calendarFragment,
             notificationFragment,
             anotherProfileFragment,
@@ -76,4 +76,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         return true;
     }
+
 }

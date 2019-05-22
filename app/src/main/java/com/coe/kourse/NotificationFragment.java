@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -32,11 +33,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.coe.kourse.data.AlarmReminderContract;
 import com.coe.kourse.data.AlarmReminderDbHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,17 +60,20 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
     AlarmReminderDbHelper alarmReminderDbHelper = new AlarmReminderDbHelper(getActivity());
     ListView reminderListView;
     ProgressDialog prgDialog;
-//    TextView reminderText;
-    private String alarmTitle = "";
+    TextView timeReminder, dateReminder;
+    private String alarmTitle = "", alarmDate = "", alarmTime = "";
     private static final int VEHICLE_LOADER = 0;
 
-    EditText nameReminder, infoReminder, dateReminder, timeReminder;
+    EditText nameReminder;
     boolean datePicked;
     Calendar calendar;
     Date payDay;
     final String[] MONTH_NAME = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    int year, month, dayOfMonth;
+    int year, month, dayOfMonth, hour, minute;
+
+    String receivedTitle="", receivedDate="", receivedTime="";
+    ContentValues values;
 
     @Nullable
     @Override
@@ -74,14 +81,33 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
 
 
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            receivedTitle = bundle.getString("title"); // Key, default value
+            receivedDate = bundle.getString("date");
+            receivedTime = bundle.getString("time");
+
+            values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, receivedTitle);
+            values.put(AlarmReminderContract.AlarmReminderEntry.KEY_DATE, receivedDate);
+            values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TIME, receivedTime);
+
+            Uri newUri = getActivity().getContentResolver().insert(AlarmReminderContract.AlarmReminderEntry.CONTENT_URI, values);
+
+            restartLoader();
+        }
+
+
+
+
+
+        values = new ContentValues();
+
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         mToolbar.setTitle(R.string.reminder_title);
 
 
         reminderListView = (ListView) view.findViewById(R.id.list);
-//        reminderText = (TextView) view.findViewById(R.id.reminderText);
-
 
         View emptyView = view.findViewById(R.id.empty_view);
         reminderListView.setEmptyView(emptyView);
@@ -99,7 +125,6 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
                 // Set the URI on the data field of the intent
                 intent.setData(currentVehicleUri);
-
                 startActivity(intent);
 
             }
@@ -107,7 +132,6 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
 
         mAddReminderButton = (FloatingActionButton) view.findViewById(R.id.fab);
-
         mAddReminderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +145,8 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
         return view;
     }
+
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -148,18 +174,11 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         mCursorAdapter.swapCursor(cursor);
-        if (cursor.getCount() > 0){
-//            reminderText.setVisibility(View.VISIBLE);
-        }else{
-//            reminderText.setVisibility(View.INVISIBLE);
-        }
-
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);
-
     }
 
     public void addReminderTitle() {
@@ -167,12 +186,15 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
         dialogReminder.setContentView(R.layout.dialog_add_reminder);
 
         nameReminder = (EditText) dialogReminder.findViewById(R.id.reminder_name_edt);
-        timeReminder = (EditText) dialogReminder.findViewById(R.id.reminder_time_edt);
+        timeReminder = (TextView) dialogReminder.findViewById(R.id.reminder_time_txt);
+        dateReminder = (TextView) dialogReminder.findViewById(R.id.reminder_date_txt);
         Button buttonCancel = (Button) dialogReminder.findViewById(R.id.reminder_btn_cancel);
         Button buttonOK = (Button) dialogReminder.findViewById(R.id.reminder_btn_ok);
 
         ImageButton selectDate = (ImageButton) dialogReminder.findViewById(R.id.btn_calendar);
+        ImageButton selectTime = (ImageButton) dialogReminder.findViewById(R.id.btn_time);
         TextView txtshowDate = dialogReminder.findViewById(R.id.reminder_date_txt);
+        TextView txtshowTime = dialogReminder.findViewById(R.id.reminder_time_txt);
 
 
         View.OnClickListener selDateListener = new View.OnClickListener() {
@@ -198,6 +220,28 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
         };
 
+
+        selectTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        txtshowTime.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+
+            }
+        });
+
+
         selectDate.setOnClickListener(selDateListener);
         txtshowDate.setOnClickListener(selDateListener);
 
@@ -216,9 +260,12 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
                 }
 
                 alarmTitle = nameReminder.getText().toString();
-                ContentValues values = new ContentValues();
+                alarmDate = dateReminder.getText().toString();
+                alarmTime = timeReminder.getText().toString();
 
                 values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, alarmTitle);
+                values.put(AlarmReminderContract.AlarmReminderEntry.KEY_DATE, alarmDate);
+                values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TIME, alarmTime);
 
                 Uri newUri = getActivity().getContentResolver().insert(AlarmReminderContract.AlarmReminderEntry.CONTENT_URI, values);
 
@@ -232,62 +279,8 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
     }
 
-//    public void addReminderTitle(){
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        builder.setTitle("Set Reminder Title");
-//
-//        final EditText input = new EditText(getActivity());
-//        input.setInputType(InputType.TYPE_CLASS_TEXT);
-//        builder.setView(input);
-//
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (input.getText().toString().isEmpty()){
-//                    return;
-//                }
-//
-//                alarmTitle = input.getText().toString();
-//                ContentValues values = new ContentValues();
-//
-//                values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, alarmTitle);
-//
-//                Uri newUri = getActivity().getContentResolver().insert(AlarmReminderContract.AlarmReminderEntry.CONTENT_URI, values);
-//
-//                restartLoader();
-//
-//
-//                if (newUri == null) {
-//                    Toast.makeText(getActivity().getApplicationContext(), "Setting Reminder Title failed", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getActivity().getApplicationContext(), "Title set successfully", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        });
-//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//
-//        builder.show();
-//    }
 
     public void restartLoader(){
         LoaderManager.getInstance(this).restartLoader(VEHICLE_LOADER, null, this);
     }
 }
-
-
-
-//        events = new ArrayList<>();
-//        addTestEvents();
-//        CourseEvent event = events.get(0);
-
-//    private void addTestEvents() {
-//        CourseEvent c1 = new CourseEvent(/* fill something */);
-//        events.add(c1);
-//    }

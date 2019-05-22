@@ -95,14 +95,14 @@
                         android:id="@+id/date_text"
                         android:textColor="@android:color/black"
                         android:layout_width="wrap_content"
-                        android:textSize="15dp"
+                        android:textSize="13dp"
                         android:layout_height="wrap_content"
                         android:text="@string/date" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:id="@+id/set_date"
-                        android:textSize="13dp"
+                        android:textSize="15dp"
                         android:textColor="@android:color/black"
                         android:layout_height="wrap_content"/>
 
@@ -139,14 +139,14 @@
                         android:id="@+id/time_text"
                         android:textColor="@android:color/black"
                         android:layout_width="wrap_content"
-                        android:textSize="15dp"
+                        android:textSize="13dp"
                         android:layout_height="wrap_content"
                         android:text="@string/time" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:id="@+id/set_time"
-                        android:textSize="13dp"
+                        android:textSize="15dp"
                         android:textColor="@android:color/black"
                         android:layout_height="wrap_content"/>
 
@@ -181,14 +181,14 @@
                         android:id="@+id/repeat_text"
                         android:textColor="@android:color/black"
                         android:layout_width="wrap_content"
-                        android:textSize="15dp"
+                        android:textSize="13dp"
                         android:layout_height="wrap_content"
                         android:text="@string/repeat" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:id="@+id/set_repeat"
-                        android:textSize="13dp"
+                        android:textSize="15dp"
                         android:textColor="@android:color/black"
                         android:layout_height="wrap_content"/>
 
@@ -238,14 +238,14 @@
                         android:id="@+id/repeat_type_text"
                         android:textColor="@android:color/black"
                         android:layout_width="wrap_content"
-                        android:textSize="15dp"
+                        android:textSize="13dp"
                         android:layout_height="wrap_content"
                         android:text="@string/repeat_type" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:id="@+id/set_repeat_type"
-                        android:textSize="13dp"
+                        android:textSize="15dp"
                         android:textColor="@android:color/black"
                         android:layout_height="wrap_content"/>
 
@@ -282,14 +282,14 @@
                         android:id="@+id/repeat_no_text"
                         android:textColor="@android:color/black"
                         android:layout_width="wrap_content"
-                        android:textSize="15dp"
+                        android:textSize="13dp"
                         android:layout_height="wrap_content"
                         android:text="@string/repeat_no" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:id="@+id/set_repeat_no"
-                        android:textSize="13dp"
+                        android:textSize="15dp"
                         android:textColor="@android:color/black"
                         android:layout_height="wrap_content"/>
 

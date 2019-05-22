@@ -109,12 +109,25 @@
                 android:layout_weight="1"
                 android:text="@string/add_reminder_Time" />
 
-            <EditText
-                android:id="@+id/reminder_time_edt"
+            <ImageButton
+                android:id="@+id/btn_time"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="2dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:src="@drawable/ic_clock"/>
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/reminder_time_txt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
+                android:text="xx:xx"
                 android:inputType="numberDecimal" />
         </LinearLayout>
 
@@ -124,6 +137,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <Button

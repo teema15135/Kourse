@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
     ProgressBar homeLoadingProgressBar;
     LinearLayout bulletPageIndicator;
 
-    String sCourse, sColor, sStampAmount;
+    String sCourse, sColor, sStampAmount, sMoney;
     LinearLayout linearSwipe;
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
@@ -99,6 +99,8 @@ public class HomeFragment extends Fragment {
     Calendar calendar;
     Date payDay;
 
+    Fragment fragment;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -109,6 +111,9 @@ public class HomeFragment extends Fragment {
         userFrameUnbonded = true;
         userFragmentList = new ArrayList<>();
         allUserCourseList = new ArrayList<>();
+
+        fragment = MainActivity.notificationFragment;
+
 
         initializeFirebaseComponent();
         initializeViews();
@@ -322,6 +327,7 @@ public class HomeFragment extends Fragment {
                         if (fixTimeTypeRadioButton.isChecked()) timeType = 1;
 
                         sCourse = nameCourse.getText().toString();
+                        sMoney = payAmount.getText().toString();
                         sColor = (sColor == null ? "#b3d53f" : sColor);
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
@@ -343,6 +349,23 @@ public class HomeFragment extends Fragment {
                              *
                              */
                         }
+
+                        /**
+                         * send data to another fragment
+                         */
+                        Bundle bundle = new Bundle();
+                        bundle.putString("date", payDate.getText().toString()); // Key, value
+                        bundle.putString("time", "08:00");
+                        bundle.putString("title", sCourse + " : payment amount " + sMoney);
+
+                        fragment.setArguments(bundle);
+                        getFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, fragment)
+                                .commit();
+
+
+                        MainActivity.isHome = false;
 
                         dialog.dismiss();
                     }
