@@ -47,8 +47,8 @@
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep Editing</string>
-    <string name="delete_dialog_msg">Delete this Reminder?</string>
     <string name="delete">Delete</string>
+    <string name="delete_dialog_msg">Delete this Reminder?</string>
     <string name="cancel">Cancel</string>
     <string name="editor_delete_reminder_successful">Reminder deleted</string>
     <string name="editor_delete_reminder_failed">Error with deleting reminder</string>
@@ -56,6 +56,7 @@
     <string name="editor_insert_reminder_failed">Error with saving reminder</string>
     <string name="editor_update_reminder_successful">Reminder updated</string>
     <string name="editor_update_reminder_failed">Error with updating reminder</string>
+    <string name="rename">Rename</string>
 
 
 </resources>
