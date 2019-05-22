@@ -346,7 +346,7 @@ public class HomeFragment extends Fragment {
 
                         if (!(false || false)) {
                             /*
-                             * if start date and time aren't empty
+                             * if not start date or time aren't empty or timeType == 0
                              * change course.start, course.time and course.date
                              */
                         }
