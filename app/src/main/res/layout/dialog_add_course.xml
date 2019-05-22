@@ -41,6 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:checkedButton="@id/nonFixTimeTypeRadioButton"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -173,7 +174,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@null" />
+                android:background="@null"
+                android:inputType="numberDecimal" />
         </LinearLayout>
 
         <View
@@ -202,7 +204,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@null" />
+                android:background="@null"
+                android:focusable="false"
+                android:hint="Select pay date..." />
         </LinearLayout>
 
         <View

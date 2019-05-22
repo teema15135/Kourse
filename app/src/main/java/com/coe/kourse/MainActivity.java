@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+        if(selectedFragment != null) getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 selectedFragment).commit();
 
         return true;

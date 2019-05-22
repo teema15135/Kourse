@@ -1,6 +1,8 @@
 package com.coe.kourse;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,8 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -30,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +46,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +56,8 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
 
     String TAG = "HomeFragment";
+    final String[] MONTH_NAME = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     ValueEventListener currentListener;
 
     boolean userFrameUnbonded = true;
@@ -66,6 +75,8 @@ public class HomeFragment extends Fragment {
     FirebaseAuth accountAuth;
 
     View view;
+    TextView usernameHomeTextView;
+    Animation textAnimation;
     FrameLayout fragment_sweep_container;
     FloatingActionButton fab;
 
@@ -74,12 +85,16 @@ public class HomeFragment extends Fragment {
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
-    EditText nameCourse, totalCourse;
+    EditText nameCourse, totalCourse, payAmount, payDate;
     RadioGroup typeRadioGroup;
     RadioButton nonFixTimeTypeRadioButton, fixTimeTypeRadioButton;
     int stampAmount;
 
     private boolean isSelected = false;
+
+    boolean datePicked;
+    Calendar calendar;
+    Date payDay;
 
     @Nullable
     @Override
@@ -115,7 +130,10 @@ public class HomeFragment extends Fragment {
 
     private void initializeViews() {
         linearSwipe = view.findViewById(R.id.linearSwipe);
+        usernameHomeTextView = view.findViewById(R.id.usernameHomeTextView);
         fab = view.findViewById(R.id.fab);
+
+        textAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.enter_from_left);
 
         widthLayout = (int) getResources().getDimension(R.dimen.l_course_width);
         heightLayout = (int) getResources().getDimension(R.dimen.l_course_height);
@@ -159,6 +177,8 @@ public class HomeFragment extends Fragment {
                 fixTimeTypeRadioButton = (RadioButton) dialog.findViewById(R.id.fixTimeTypeRadioButton);
                 nameCourse = (EditText) dialog.findViewById(R.id.add_name_edittext);
                 totalCourse = (EditText) dialog.findViewById(R.id.add_total_edittext);
+                payAmount = (EditText) dialog.findViewById(R.id.add_pay_edittext);
+                payDate = (EditText) dialog.findViewById(R.id.add_due_edittext);
                 Button buttonCancel = (Button) dialog.findViewById(R.id.home_btn_cancel);
                 Button buttonOK = (Button) dialog.findViewById(R.id.home_btn_ok);
 
@@ -253,6 +273,31 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                calendar = Calendar.getInstance();
+
+                datePicked = false;
+                payDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                datePicked = true;
+                                payDay = new Date();
+                                payDay.setYear(year);
+                                payDay.setMonth(month);
+                                payDay.setDate(dayOfMonth);
+                                payDay.setHours(1);
+                                payDate.setText(payDay.getDay() + " " + MONTH_NAME[payDay.getMonth()] + " " + payDay.getYear());
+                            }
+                        };
+                        DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DATE));
+                        dpd.show();
+                    }
+                });
 
                 // when click ok or cancel button
 
@@ -269,12 +314,14 @@ public class HomeFragment extends Fragment {
 
                         int timeType = 0;
                         if (fixTimeTypeRadioButton.isChecked()) timeType = 1;
+
                         sCourse = nameCourse.getText().toString();
                         sColor = (sColor == null ? "#b3d53f" : sColor);
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
 
                         Course course = new Course(sCourse, sColor, stampAmount, timeType);
+
                         User currentUser = userList.get(currentUserIndex);
                         currentUser.addCourse(course);
                         Map<String, Object> userMap = currentUser.toMap();
@@ -282,6 +329,14 @@ public class HomeFragment extends Fragment {
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put(currentUser.getID(), userMap);
                         usersRef.updateChildren(childUpdates);
+
+                        if (!(payAmount.getText().toString().isEmpty() || payDate.getText().toString().isEmpty())) {
+                            /*
+                             * Set reminder here
+                             * using payDay (Date class) to get date
+                             *
+                             */
+                        }
 
                         dialog.dismiss();
                     }
@@ -291,16 +346,22 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void updateBannerName() {
+        usernameHomeTextView.setText(userList.get(currentUserIndex).getName());
+    }
+
     private void leftUser() {
         if (currentUserIndex == 0) return;
         changeUser(currentUserIndex - 1, 1);
         currentUserIndex -= 1;
+        updateBannerName();
     }
 
     private void rightUser() {
         if (currentUserIndex == maxFragment - 1) return;
         changeUser(currentUserIndex + 1, 0);
         currentUserIndex += 1;
+        updateBannerName();
     }
 
     private void fetchUser() {
@@ -308,6 +369,7 @@ public class HomeFragment extends Fragment {
         Fragment fragment = userFragmentList.get(currentUserIndex);
         userFrameUnbonded = false;
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, fragment).commit();
+        updateBannerName();
     }
 
     private void changeUser(int index) {
@@ -359,6 +421,7 @@ public class HomeFragment extends Fragment {
                 if (userFrameUnbonded) {
                     try {
                         changeUser(currentUserIndex);
+                        updateBannerName();
                     } catch (Exception e) {
                     }
                 } else {

@@ -18,6 +18,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/kourse_cover_image_home"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:background="@drawable/home_cover" />
@@ -36,26 +37,62 @@
 
         </RelativeLayout>
 
-        <FrameLayout
-            android:id="@+id/fragment_sweep_container"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:foregroundGravity="center_horizontal"/>
+            android:layout_height="match_parent">
 
-        <!--<ScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:scrollbars="none">-->
+            <View
+                android:elevation="2dp"
+                android:id="@+id/above_username_margin"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/white" />
 
-            <!--<LinearLayout-->
-                <!--android:id="@+id/layout_list"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:orientation="vertical"></LinearLayout>-->
+            <LinearLayout
+                android:elevation="2dp"
+                android:id="@+id/username_banner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/above_username_margin"
+                android:background="@color/colorAccent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <!--</ScrollView>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:fontFamily="@font/rsu"
+                    android:text="All Course of "
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/usernameHomeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:elevation="2dp"
+                android:layout_below="@id/username_banner"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@drawable/white_transparent_gradient" />
+
+            <FrameLayout
+                android:elevation="1dp"
+                android:layout_below="@id/username_banner"
+                android:id="@+id/fragment_sweep_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:foregroundGravity="center_horizontal" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

@@ -17,10 +17,6 @@ public class Course {
 
     public int type; // 0 for Non-fix time type, 1 for Fix time type
 
-    public float payAmount;
-    public Date payDate;
-
-
     public Course() {
         super();
     }
