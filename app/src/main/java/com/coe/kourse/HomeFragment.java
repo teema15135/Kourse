@@ -46,6 +46,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coe.kourse.data.AlarmReminderContract;
+import com.dpro.widgets.OnWeekdaysChangeListener;
+import com.dpro.widgets.WeekdaysPicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,11 +56,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Calendar.FRIDAY;
+import static java.util.Calendar.SATURDAY;
+import static java.util.Calendar.SUNDAY;
+import static java.util.Calendar.THURSDAY;
+import static java.util.Calendar.TUESDAY;
 
 
 public class HomeFragment extends Fragment {
@@ -109,6 +119,12 @@ public class HomeFragment extends Fragment {
 
     Fragment fragment;
 
+    private final LinkedHashMap<Integer, Boolean> mp = new LinkedHashMap<>();
+    private WeekdaysPicker widget;
+    private List<Integer> selected_days;
+    private TextView tv_selected_days;
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -121,6 +137,8 @@ public class HomeFragment extends Fragment {
         allUserCourseList = new ArrayList<>();
 
         fragment = MainActivity.notificationFragment;
+
+
 
 
         initializeFirebaseComponent();
@@ -205,6 +223,7 @@ public class HomeFragment extends Fragment {
                 Button buttonRed = (Button) dialog.findViewById(R.id.add_red_button);
                 Button buttonYellow = (Button) dialog.findViewById(R.id.add_yellow_button);
 
+                tv_selected_days = (TextView) dialog.findViewById(R.id.tv_selected_days);
 
                 // just set Drawable of color buttons
                 GradientDrawable blueSelected = new GradientDrawable();
@@ -315,6 +334,24 @@ public class HomeFragment extends Fragment {
                                 calendar.get(Calendar.DATE));
                         dpd.getDatePicker().setMinDate(System.currentTimeMillis());
                         dpd.show();
+                    }
+                });
+
+
+                selected_days = Arrays.asList(Calendar.SATURDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.SUNDAY);
+                mp.put(SUNDAY, true);
+                mp.put(SATURDAY, true);
+                mp.put(THURSDAY, false);
+                mp.put(FRIDAY, true);
+                mp.put(TUESDAY, true);
+                mp.put(SATURDAY, false); //For duplicated values, the first one is counting, but the last one is updating the selected value
+
+                WeekdaysPicker widget = (WeekdaysPicker) dialog.findViewById(R.id.weekdays);
+                widget.setOnWeekdaysChangeListener(new OnWeekdaysChangeListener() {
+                    @Override
+                    public void onChange(View view, int clickedDayOfWeek, List<Integer> selectedDays) {
+                tv_selected_days.setText("Selected days: " + Arrays.toString(selectedDays.toArray()));
+                
                     }
                 });
 
