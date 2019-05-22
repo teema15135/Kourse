@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
     ProgressBar homeLoadingProgressBar;
     LinearLayout bulletPageIndicator;
 
-    String sCourse, sColor, sStampAmount, sMoney;
+    String sCourse, sColor, sStampAmount;
     LinearLayout linearSwipe;
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
@@ -335,7 +335,6 @@ public class HomeFragment extends Fragment {
                         if (fixTimeTypeRadioButton.isChecked()) timeType = 1;
 
                         sCourse = nameCourse.getText().toString();
-                        sMoney = payAmount.getText().toString();
                         sColor = (sColor == null ? "#b3d53f" : sColor);
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
@@ -345,6 +344,13 @@ public class HomeFragment extends Fragment {
 
                         Course course = new Course(sCourse, sColor, stampAmount, timeType);
 
+                        if (!(false || false)) {
+                            /*
+                             * if start date and time aren't empty
+                             * change course.start, course.time and course.date
+                             */
+                        }
+
                         User currentUser = userList.get(currentUserIndex);
                         currentUser.addCourse(course);
                         Map<String, Object> userMap = currentUser.toMap();
@@ -353,30 +359,25 @@ public class HomeFragment extends Fragment {
                         childUpdates.put(currentUser.getID(), userMap);
                         usersRef.updateChildren(childUpdates);
 
-                        if (!(payAmount.getText().toString().isEmpty() || payDate.getText().toString().isEmpty())) {
-                           /*
-                            *
-                            *
-                            *
-                            */
+                        if (!(sPayAmount.isEmpty() || sPayDate.isEmpty())) {
+
+                            /**
+                             * send data to another fragment
+                             */
+                            Bundle bundle = new Bundle();
+                            bundle.putString("date", payDate.getText().toString()); // Key, value
+                            bundle.putString("time", "08:00");
+                            bundle.putString("title", sCourse + " : payment amount " + sPayDate);
+
+                            fragment.setArguments(bundle);
+                            getFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, fragment)
+                                    .commit();
+
+                            MainActivity.isHome = false;
                         }
 
-                        /**
-                         * send data to another fragment
-                         */
-                        Bundle bundle = new Bundle();
-                        bundle.putString("date", payDate.getText().toString()); // Key, value
-                        bundle.putString("time", "08:00");
-                        bundle.putString("title", sCourse + " : payment amount " + sMoney);
-
-                        fragment.setArguments(bundle);
-                        getFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_container, fragment)
-                                .commit();
-
-
-                        MainActivity.isHome = false;
 
                         dialog.dismiss();
                     }
