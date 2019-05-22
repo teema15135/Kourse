@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     BottomNavigationView bottomNav;
 
+    static boolean isHome = false;
+
     Fragment homeFragment,
             calendarFragment,
             notificationFragment,
@@ -39,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (page) {
             default:
             case "Home" : getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    homeFragment).commit(); break;
+                    homeFragment).commit(); isHome = true; break;
             case "Reminder" : getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    notificationFragment).commit(); break;
+                    notificationFragment).commit(); isHome = false; break;
         }
 
     }
@@ -53,15 +55,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
                 selectedFragment = homeFragment;
+                isHome = true;
                 break;
             case R.id.nav_calendar:
                 selectedFragment = calendarFragment;
+                isHome = false;
                 break;
             case R.id.nav_notification:
                 selectedFragment = notificationFragment;
+                isHome = false;
                 break;
             case R.id.nav_another_profile:
                 selectedFragment = anotherProfileFragment;
+                isHome = false;
                 break;
         }
 
