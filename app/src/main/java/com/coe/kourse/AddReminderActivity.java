@@ -208,7 +208,7 @@ public class AddReminderActivity extends AppCompatActivity implements
         }
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.title_activity_add_reminder);
+        getSupportActionBar().setTitle(R.string.title_activity_edit_reminder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -424,10 +424,10 @@ public class AddReminderActivity extends AppCompatActivity implements
                 // If the reminder hasn't changed, continue with navigating up to parent activity
                 // which is the {@link MainActivity}.
                 if (!mVehicleHasChanged) {
-//                    Intent intent = new Intent(AddReminderActivity.this, MainActivity.class);
-//                    intent.putExtra("Page", "Reminder");
-//                    startActivity(intent);
-                    startActivity(new Intent(AddReminderActivity.this, NotificationFragment.class));
+                    Intent intent = new Intent(AddReminderActivity.this, MainActivity.class);
+                    intent.putExtra("Page", "Reminder");
+                    startActivity(intent);
+//                    startActivity(new Intent(AddReminderActivity.this, NotificationFragment.class));
 //                    NavUtils.navigateUpFromSameTask(AddReminderActivity.this);
                     return true;
                 }
