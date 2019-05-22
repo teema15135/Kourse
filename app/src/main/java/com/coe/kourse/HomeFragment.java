@@ -445,8 +445,10 @@ public class HomeFragment extends Fragment {
                         homeLoadingProgressBar.setVisibility(View.INVISIBLE);
                     } catch (Exception e) {
                     }
-                } else {
+                } else if (MainActivity.isHome) {
                     fetchUser();
+                } else {
+
                 }
             }
 
