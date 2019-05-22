@@ -47,8 +47,8 @@ public class CalendarFragment extends Fragment {
     Long rDate;
     String rdata;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference rootRef = database.getReference();
+    FirebaseDatabase database;
+    DatabaseReference rootRef;
 
     @Nullable
     @Override
@@ -59,6 +59,8 @@ public class CalendarFragment extends Fragment {
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         list = view.findViewById(R.id.listView);
         month = view.findViewById(R.id.monthtv);
+
+        initializeFirebaseInstance();
 
         getInput();
 
@@ -100,13 +102,18 @@ public class CalendarFragment extends Fragment {
         return view;
     }
 
+    private void initializeFirebaseInstance() {
+        database = FirebaseDatabase.getInstance();
+        rootRef = database.getReference();
+    }
+
     private  void getInput(){
         //input Example
         rColor = Color.YELLOW;
         dateString = "24-May-2019 00:00";
+        dateToMillis(dateString);
         rDate = dateInMilliseconds;
         rdata = "test";
-        dateToMillis(dateString);
         createEvent();
     }
 

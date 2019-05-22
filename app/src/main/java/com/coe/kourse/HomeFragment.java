@@ -491,6 +491,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userFragmentList = new ArrayList<>();
+                homeLoadingProgressBar.setVisibility(View.INVISIBLE);
                 for (DataSnapshot unique : dataSnapshot.getChildren()) {
 
                     User user = unique.getValue(User.class);
