@@ -2,12 +2,15 @@ package com.coe.kourse;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +18,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -31,11 +38,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.coe.kourse.data.AlarmReminderContract;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,7 +64,10 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
 
     String TAG = "HomeFragment";
+    final String[] MONTH_NAME = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     ValueEventListener currentListener;
+    private static final int VEHICLE_LOADER = 0;
 
     boolean userFrameUnbonded = true;
     String myresult = "";
@@ -71,8 +84,12 @@ public class HomeFragment extends Fragment {
     FirebaseAuth accountAuth;
 
     View view;
+    TextView usernameHomeTextView;
+    Animation textAnimation;
     FrameLayout fragment_sweep_container;
     FloatingActionButton fab;
+    ProgressBar homeLoadingProgressBar;
+    LinearLayout bulletPageIndicator;
 
     String sCourse, sColor, sStampAmount;
     LinearLayout linearSwipe;
@@ -124,7 +141,12 @@ public class HomeFragment extends Fragment {
 
     private void initializeViews() {
         linearSwipe = view.findViewById(R.id.linearSwipe);
+        usernameHomeTextView = view.findViewById(R.id.usernameHomeTextView);
         fab = view.findViewById(R.id.fab);
+        homeLoadingProgressBar = view.findViewById(R.id.homeLoadingProgressBar);
+        bulletPageIndicator = view.findViewById(R.id.bulletPageIndicator);
+
+        textAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.enter_from_left);
 
         widthLayout = (int) getResources().getDimension(R.dimen.l_course_width);
         heightLayout = (int) getResources().getDimension(R.dimen.l_course_height);
@@ -264,6 +286,8 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                calendar = Calendar.getInstance();
+
                 datePicked = false;
                 payDate.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -277,12 +301,14 @@ public class HomeFragment extends Fragment {
                                 payDay.setMonth(month);
                                 payDay.setDate(dayOfMonth);
                                 payDay.setHours(1);
+                                payDate.setText(payDay.getDay() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
                             }
                         };
                         DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
                                 calendar.get(Calendar.YEAR),
                                 calendar.get(Calendar.MONTH),
                                 calendar.get(Calendar.DATE));
+                        dpd.getDatePicker().setMinDate(System.currentTimeMillis());
                         dpd.show();
                     }
                 });
@@ -308,6 +334,9 @@ public class HomeFragment extends Fragment {
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
 
+                        String sPayAmount = payAmount.getText().toString();
+                        String sPayDate = payDate.getText().toString();
+
                         Course course = new Course(sCourse, sColor, stampAmount, timeType);
 
                         User currentUser = userList.get(currentUserIndex);
@@ -319,11 +348,11 @@ public class HomeFragment extends Fragment {
                         usersRef.updateChildren(childUpdates);
 
                         if (!(payAmount.getText().toString().isEmpty() || payDate.getText().toString().isEmpty())) {
-                            /*
-                             * Set reminder here
-                             * using payDay (Date class) to get date
-                             *
-                             */
+                           /*
+                            *
+                            *
+                            *
+                            */
                         }
 
                         dialog.dismiss();
@@ -334,16 +363,35 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void updateBullet() {
+        bulletPageIndicator.removeAllViews();
+        int numBullet = userFragmentList.size();
+        for(int i = 0; i < numBullet; i++) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setPadding(8, 0, 8, 0);
+            imageView.setImageResource((i == currentUserIndex ? R.drawable.bullet_selected : R.drawable.bullet_unselected));
+            bulletPageIndicator.addView(imageView);
+        }
+    }
+
+    private void updateBannerName() {
+        usernameHomeTextView.setText(userList.get(currentUserIndex).getName());
+    }
+
     private void leftUser() {
         if (currentUserIndex == 0) return;
         changeUser(currentUserIndex - 1, 1);
         currentUserIndex -= 1;
+        updateBannerName();
+        updateBullet();
     }
 
     private void rightUser() {
         if (currentUserIndex == maxFragment - 1) return;
         changeUser(currentUserIndex + 1, 0);
         currentUserIndex += 1;
+        updateBannerName();
+        updateBullet();
     }
 
     private void fetchUser() {
@@ -351,6 +399,8 @@ public class HomeFragment extends Fragment {
         Fragment fragment = userFragmentList.get(currentUserIndex);
         userFrameUnbonded = false;
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, fragment).commit();
+        updateBannerName();
+        updateBullet();
     }
 
     private void changeUser(int index) {
@@ -394,7 +444,6 @@ public class HomeFragment extends Fragment {
                     userFragmentList.add(userFragment);
                     Log.d(TAG, "fragment array added");
 
-
                     maxFragment++;
                     Log.d(TAG, "MaxFragment is " + maxFragment);
                 }
@@ -402,10 +451,15 @@ public class HomeFragment extends Fragment {
                 if (userFrameUnbonded) {
                     try {
                         changeUser(currentUserIndex);
+                        updateBannerName();
+                        updateBullet();
+                        homeLoadingProgressBar.setVisibility(View.INVISIBLE);
                     } catch (Exception e) {
                     }
-                } else {
+                } else if (MainActivity.isHome) {
                     fetchUser();
+                } else {
+
                 }
             }
 
