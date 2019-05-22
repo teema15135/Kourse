@@ -14,12 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeUserFragment extends Fragment {
 
@@ -27,6 +37,8 @@ public class HomeUserFragment extends Fragment {
 
     String userName;
     ArrayList<Course> courses;
+
+    User user;
 
     View scrollView, contentView;
     TextView nameTextView;
@@ -41,6 +53,7 @@ public class HomeUserFragment extends Fragment {
             Log.d(TAG, "Done wait for null");
             this.userName = user.getName();
             this.courses = user.getCourses();
+            this.user = user;
         } catch (NullPointerException e) {
             Log.d(TAG, "NullPointer for " + user.toString());
         }
@@ -81,14 +94,35 @@ public class HomeUserFragment extends Fragment {
         LinearLayout contentView = (LinearLayout) this.contentView;
         ScrollView scrollView = (ScrollView) this.scrollView;
         scrollView.removeAllViews();
-        for( Course course : this.courses ) {
-            if ( course.getName().equals("N/A") ) continue;
-            createCourseElements(contentView, course.getName(), course.getColor(), course.getAttend(), course.getTotal());
+        int numCourse = this.courses.size();
+        for( int i = 0; i < numCourse; i++ ) {
+            if ( courses.get(i).getName().equals("N/A") ) continue;
+            createCourseElements(contentView, courses.get(i).getName(), courses.get(i).getColor(), courses.get(i).getAttend(), courses.get(i).getTotal(), courses.get(i));
+        }
+        if (this.courses.size() == 1) {
+            LinearLayout linearLayout = new LinearLayout(getActivity());
+            linearLayout.setPadding(0, heightLayout, 0, 0);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setGravity(Gravity.CENTER);
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            TextView textView = new TextView(getActivity());
+            textView.setGravity(Gravity.CENTER);
+            textView.setText("This user have no course added");
+
+            ImageView imageView = new ImageView(getActivity());
+            imageView.setImageResource(R.drawable.sad_emoji);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            linearLayout.addView(textView);
+            linearLayout.addView(imageView);
+
+            contentView.addView(linearLayout);
         }
         scrollView.addView(contentView);
     }
 
-    private void createCourseElements(LinearLayout main, String sCourse, String sColor, int stampAttend, int stampAmount) {
+    private void createCourseElements(LinearLayout main, String sCourse, String sColor, int stampAttend, int stampAmount, Course course) {
 
         LinearLayout.LayoutParams mainPrams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(widthLayout, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -125,11 +159,15 @@ public class HomeUserFragment extends Fragment {
         int rowOfStamp = stampAmount / 5;
         if (stampAmount % 5 != 0) rowOfStamp++;
 
+        String lightColor = getLighterColor(sColor);
+        int nonSelectStamp = R.drawable.stamp_unselect;
+        int selectStamp = getSelectStampResource(sColor);
+
         LinearLayout allStampLayout = new LinearLayout(getActivity());
         allStampLayout.setOrientation(LinearLayout.VERTICAL);
         allStampLayout.setPadding(0, paddingLayout, paddingLayout, paddingLayout);
         allStampLayout.setLayoutParams(stamplprams);
-        allStampLayout.setBackground(getDrawableWithRadiusStamp("#b9b0a2"));
+        allStampLayout.setBackground(getDrawableWithRadiusStamp(lightColor));
 
         for (int i = 0; i < rowOfStamp; i++) {
 
@@ -138,21 +176,20 @@ public class HomeUserFragment extends Fragment {
             stampLayout.setOrientation(LinearLayout.HORIZONTAL);
             stampLayout.setPadding(paddingLeftLayout, paddingLayout, paddingLayout, paddingLayout);
             stampLayout.setLayoutParams(stamplprams);
-            stampLayout.setBackground(getDrawableWithRadiusStamp("#b9b0a2"));
+            stampLayout.setBackground(getDrawableWithRadiusStamp(lightColor));
 
             for (int j = 1; j <= 5; j++) {
                 int numStamp = i * 5 + j;
                 LinearLayout stampBtnLayout = new LinearLayout(getActivity());
                 Button stampButton = new Button(getActivity());
                 if (numStamp > stampAttend) {
-                    stampButton.setBackgroundResource(R.drawable.stamp_unselect_white);
+                    stampButton.setBackgroundResource(nonSelectStamp);
+                    stampButton.setText(Integer.toString(numStamp));
+                    stampButton.setTextSize(10);
+                    stampButton.setTextColor(0xFF3B3B3B);
                 } else {
-                    // Must change to attended stamp
-                    stampButton.setBackgroundResource(R.drawable.stamp_unselect_white);
+                    stampButton.setBackgroundResource(selectStamp);
                 }
-                stampButton.setText(Integer.toString(numStamp));
-                stampButton.setTextSize(10);
-                stampButton.setTextColor(Color.WHITE);
                 stampBtnLayout.setLayoutParams(stampBtnlprams);
                 stampBtnLayout.addView(stampButton);
                 stampLayout.addView(stampBtnLayout);
@@ -161,6 +198,24 @@ public class HomeUserFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             /* Increase the attend */
+
+                            course.attend();
+                            Log.d(TAG, "Attend added");
+
+                            Map<String, Object> userMap = user.toMap();
+
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put(user.getID(), userMap);
+
+                            FirebaseAuth auth = FirebaseAuth.getInstance();
+                            FirebaseUser user = auth.getCurrentUser();
+                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference()
+                                    .child("accounts")
+                                    .child(user.getUid())
+                                    .child("users");
+                            usersRef.updateChildren(childUpdates);
+
+                            Toast.makeText(getActivity(), course.getName() + " attend !", Toast.LENGTH_SHORT).show();
                         }
                     });
                 if (numStamp == stampAmount)
@@ -205,5 +260,25 @@ public class HomeUserFragment extends Fragment {
         gradientDrawable.setColor(Color.parseColor(sColor));
         return gradientDrawable;
 
+    }
+
+    private String getLighterColor(String color) {
+        switch (color) {
+            case "#40a2b7" : return "#a4d5e0";
+            case "#b3d53f" : return "#d8e8a0";
+            case "#ffab2d": return "#fdffcc";
+            case "#ff5855" : return "#ffb0ae";
+            default: return "#b9b0a2";
+        }
+    }
+
+    private int getSelectStampResource(String color) {
+        switch (color) {
+            case "#40a2b7" : return R.drawable.stamp_select_blue;
+            case "#b3d53f" : return R.drawable.stamp_select_green;
+            case "#ffab2d": return R.drawable.stamp_select_orange;
+            case "#ff5855" : return R.drawable.stamp_select_red;
+            default: return R.drawable.stamp_select_orange;
+        }
     }
 }

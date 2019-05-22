@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextSwitcher;
@@ -79,6 +80,7 @@ public class HomeFragment extends Fragment {
     Animation textAnimation;
     FrameLayout fragment_sweep_container;
     FloatingActionButton fab;
+    ProgressBar homeLoadingProgressBar;
 
     String sCourse, sColor, sStampAmount;
     LinearLayout linearSwipe;
@@ -132,6 +134,7 @@ public class HomeFragment extends Fragment {
         linearSwipe = view.findViewById(R.id.linearSwipe);
         usernameHomeTextView = view.findViewById(R.id.usernameHomeTextView);
         fab = view.findViewById(R.id.fab);
+        homeLoadingProgressBar = view.findViewById(R.id.homeLoadingProgressBar);
 
         textAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.enter_from_left);
 
@@ -413,7 +416,6 @@ public class HomeFragment extends Fragment {
                     userFragmentList.add(userFragment);
                     Log.d(TAG, "fragment array added");
 
-
                     maxFragment++;
                     Log.d(TAG, "MaxFragment is " + maxFragment);
                 }
@@ -422,6 +424,7 @@ public class HomeFragment extends Fragment {
                     try {
                         changeUser(currentUserIndex);
                         updateBannerName();
+                        homeLoadingProgressBar.setVisibility(View.INVISIBLE);
                     } catch (Exception e) {
                     }
                 } else {
