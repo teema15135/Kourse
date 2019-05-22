@@ -45,22 +45,20 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/logoutTextView"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/logout"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toLeftOf="@id/logoutTextView"
                     android:scaleType="fitCenter"
-                    />
+                    android:src="@drawable/logout" />
 
                 <TextView
                     android:id="@+id/logoutTextView"
-                    android:text="Logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    />
+                    android:text="Logout" />
 
             </RelativeLayout>
         </LinearLayout>
@@ -79,7 +77,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp">
 
         <LinearLayout
             android:id="@+id/userListLinearLayout"
@@ -87,5 +85,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
+
+    <ListView
+        android:id="@+id/userListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
