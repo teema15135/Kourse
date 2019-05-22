@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -33,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +56,8 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
 
     String TAG = "HomeFragment";
+    final String[] MONTH_NAME = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     ValueEventListener currentListener;
 
     boolean userFrameUnbonded = true;
@@ -71,6 +75,8 @@ public class HomeFragment extends Fragment {
     FirebaseAuth accountAuth;
 
     View view;
+    TextView usernameHomeTextView;
+    Animation textAnimation;
     FrameLayout fragment_sweep_container;
     FloatingActionButton fab;
 
@@ -124,7 +130,10 @@ public class HomeFragment extends Fragment {
 
     private void initializeViews() {
         linearSwipe = view.findViewById(R.id.linearSwipe);
+        usernameHomeTextView = view.findViewById(R.id.usernameHomeTextView);
         fab = view.findViewById(R.id.fab);
+
+        textAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.enter_from_left);
 
         widthLayout = (int) getResources().getDimension(R.dimen.l_course_width);
         heightLayout = (int) getResources().getDimension(R.dimen.l_course_height);
@@ -264,6 +273,8 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                calendar = Calendar.getInstance();
+
                 datePicked = false;
                 payDate.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -277,6 +288,7 @@ public class HomeFragment extends Fragment {
                                 payDay.setMonth(month);
                                 payDay.setDate(dayOfMonth);
                                 payDay.setHours(1);
+                                payDate.setText(payDay.getDay() + " " + MONTH_NAME[payDay.getMonth()] + " " + payDay.getYear());
                             }
                         };
                         DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
@@ -334,16 +346,22 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void updateBannerName() {
+        usernameHomeTextView.setText(userList.get(currentUserIndex).getName());
+    }
+
     private void leftUser() {
         if (currentUserIndex == 0) return;
         changeUser(currentUserIndex - 1, 1);
         currentUserIndex -= 1;
+        updateBannerName();
     }
 
     private void rightUser() {
         if (currentUserIndex == maxFragment - 1) return;
         changeUser(currentUserIndex + 1, 0);
         currentUserIndex += 1;
+        updateBannerName();
     }
 
     private void fetchUser() {
@@ -351,6 +369,7 @@ public class HomeFragment extends Fragment {
         Fragment fragment = userFragmentList.get(currentUserIndex);
         userFrameUnbonded = false;
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_sweep_container, fragment).commit();
+        updateBannerName();
     }
 
     private void changeUser(int index) {
@@ -402,6 +421,7 @@ public class HomeFragment extends Fragment {
                 if (userFrameUnbonded) {
                     try {
                         changeUser(currentUserIndex);
+                        updateBannerName();
                     } catch (Exception e) {
                     }
                 } else {
