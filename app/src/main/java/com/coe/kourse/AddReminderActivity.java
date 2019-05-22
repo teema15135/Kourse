@@ -404,7 +404,7 @@ public class AddReminderActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.save_reminder:
-                
+
                 if (mTitleText.getText().toString().length() == 0){
                     mTitleText.setError("Reminder Title cannot be blank!");
                 }
@@ -424,6 +424,9 @@ public class AddReminderActivity extends AppCompatActivity implements
                 // If the reminder hasn't changed, continue with navigating up to parent activity
                 // which is the {@link MainActivity}.
                 if (!mVehicleHasChanged) {
+//                    Intent intent = new Intent(AddReminderActivity.this, MainActivity.class);
+//                    intent.putExtra("Page", "Reminder");
+//                    startActivity(intent);
                     startActivity(new Intent(AddReminderActivity.this, NotificationFragment.class));
 //                    NavUtils.navigateUpFromSameTask(AddReminderActivity.this);
                     return true;
