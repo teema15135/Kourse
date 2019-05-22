@@ -298,6 +298,7 @@ public class HomeFragment extends Fragment {
                                 calendar.get(Calendar.YEAR),
                                 calendar.get(Calendar.MONTH),
                                 calendar.get(Calendar.DATE));
+                        dpd.getDatePicker().setMinDate(System.currentTimeMillis());
                         dpd.show();
                     }
                 });

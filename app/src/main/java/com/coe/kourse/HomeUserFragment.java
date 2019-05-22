@@ -131,7 +131,7 @@ public class HomeUserFragment extends Fragment {
         LinearLayout.LayoutParams stampBtnlprams = new LinearLayout.LayoutParams(widthHeightStampbtn, widthHeightStampbtn);
 
         LinearLayout margin = new LinearLayout(getActivity());
-        margin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, marginStamp));
+        margin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, paddingLayout));
 
         lprams.setMargins(0, marginBottomLayout, 0, 0);
         stampBtnlprams.setMargins(0, 0, marginStamp, marginStamp);
@@ -144,17 +144,24 @@ public class HomeUserFragment extends Fragment {
         main.setLayoutParams(mainPrams);
 
         //minimize layout (pop-up layout)
-        LinearLayout row = new LinearLayout(getActivity());
-        row.setOrientation(LinearLayout.HORIZONTAL);
+        RelativeLayout row = new RelativeLayout(getActivity());
         row.setClipToOutline(true);
-        row.setPadding(paddingLeftLayout, paddingLayout, paddingLayout, paddingLayout);
+        row.setPadding(paddingLeftLayout, paddingLayout, paddingLeftLayout, paddingLayout);
         row.setLayoutParams(sublprams);
         row.setBackground(getDrawableWithRadius(sColor));
 
         TextView showCourse = new TextView(getActivity());
         showCourse.setText(sCourse);
         showCourse.setTextColor(Color.WHITE);
+        showCourse.setGravity(Gravity.LEFT);
         row.addView(showCourse);
+
+        TextView showCourseNum = new TextView(getActivity());
+        showCourseNum.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        showCourseNum.setText(Integer.toString(stampAttend));
+        showCourseNum.setTextColor(Color.WHITE);
+        showCourseNum.setGravity(Gravity.RIGHT);
+        row.addView(showCourseNum);
 
         int rowOfStamp = stampAmount / 5;
         if (stampAmount % 5 != 0) rowOfStamp++;
