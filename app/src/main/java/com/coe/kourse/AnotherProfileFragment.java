@@ -8,12 +8,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +38,11 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AnotherProfileFragment extends Fragment {
+public class AnotherProfileFragment extends Fragment implements PopupMenu.OnMenuItemClickListener, AdapterView.OnItemClickListener {
 
     String TAG = "AnotherProfile";
+
+    int selectUsernamePosition = -1;
 
     View view;
 
@@ -43,13 +51,14 @@ public class AnotherProfileFragment extends Fragment {
     ImageView logoutImage;
     TextView user, logoutTextView;
     String name;
-    LinearLayout userListLinearLayout;
+    ListView listView;
 
     String accountEmail, accountUID, accountName, accountURL;
 
     ValueEventListener currentListener;
 
     ArrayList<User> userList;
+    ArrayList<String> nameList;
 
     DatabaseReference accountRef, usersRef;
     FirebaseDatabase database;
@@ -107,6 +116,7 @@ public class AnotherProfileFragment extends Fragment {
                 dialog.show();
             }
         });
+        listView.setOnItemClickListener(this);
 
         return view;
     }
@@ -116,8 +126,8 @@ public class AnotherProfileFragment extends Fragment {
         logoutImage = view.findViewById(R.id.logoutImageButton);
         logoutTextView = view.findViewById(R.id.logoutTextView);
         dialogButton = view.findViewById(R.id.a_profile_btn_person);
-        userListLinearLayout = view.findViewById(R.id.userListLinearLayout);
         user = view.findViewById(R.id.a_profile_gmail);
+        listView = view.findViewById(R.id.userListView);
     }
 
     private void initializeFirebaseComponent() {
@@ -129,6 +139,7 @@ public class AnotherProfileFragment extends Fragment {
         accountURL = accountAuth.getCurrentUser().getPhotoUrl().toString();
 
         userList = new ArrayList<User>();
+        nameList = new ArrayList<String>();
 
         accountRef = database.getReference();
         usersRef = accountRef.child("accounts").child(accountUID).child("users");
@@ -138,8 +149,27 @@ public class AnotherProfileFragment extends Fragment {
         View.OnClickListener logoutListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                accountAuth.signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                Dialog confirmDialog = new Dialog(getContext());
+                confirmDialog.setContentView(R.layout.dialog_confirm);
+
+                Button okButton = (Button) confirmDialog.findViewById(R.id.okConfirm);
+                Button cancelButton = (Button) confirmDialog.findViewById(R.id.cancelConfirm);
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        accountAuth.signOut();
+                        confirmDialog.dismiss();
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                    }
+                });
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        confirmDialog.dismiss();
+                    }
+                });
+
+                confirmDialog.show();
             }
         };
         logoutTextView.setOnClickListener(logoutListener);
@@ -152,34 +182,22 @@ public class AnotherProfileFragment extends Fragment {
     }
 
     private void updateUserList() {
-
-        userListLinearLayout.removeAllViewsInLayout();
         if (currentListener != null) usersRef.removeEventListener(currentListener);
 
         currentListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userList = new ArrayList<>();
+                nameList = new ArrayList<>();
                 for (DataSnapshot unique : dataSnapshot.getChildren()) {
                     User user = unique.getValue(User.class);
                     userList.add(user);
+                    nameList.add(user.getName());
+                }
 
-                    LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-
-                    // Create Button
-                    Button btn = new Button(getActivity());
-                    btn.setId(Integer.parseInt(user.getID().substring(4)));
-                    btn.setText(user.getName());
-                    btn.setLayoutParams(lprams);
-                    btn.setAllCaps(false);
-                    btn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-                    userListLinearLayout.addView(btn);
+                if (!MainActivity.isHome) {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, nameList);
+                    listView.setAdapter(adapter);
                 }
             }
 
@@ -189,5 +207,96 @@ public class AnotherProfileFragment extends Fragment {
         };
 
         usersRef.addValueEventListener(currentListener);
+
+    }
+
+    private void renameUser() {
+        User selectUser = userList.get(selectUsernamePosition);
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_profile_person);
+
+        final EditText namePerson = (EditText) dialog.findViewById(R.id.profile_dialog_name);
+        Button buttonCancel = (Button) dialog.findViewById(R.id.profile_btn_cancel);
+        Button buttonOK = (Button) dialog.findViewById(R.id.profile_btn_ok);
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Push update to Firebase Database
+                name = namePerson.getText().toString();
+                String userID = selectUser.getID();
+                DatabaseReference userRef = usersRef.child(userID);
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("name", name);
+                userRef.updateChildren(childUpdates);
+
+                dialog.dismiss();
+
+                updateUserList();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void deleteUser() {
+        User selectUser = userList.get(selectUsernamePosition);
+        Dialog confirmDialog = new Dialog(getContext());
+        confirmDialog.setContentView(R.layout.dialog_confirm);
+
+        Button okButton = (Button) confirmDialog.findViewById(R.id.okConfirm);
+        Button cancelButton = (Button) confirmDialog.findViewById(R.id.cancelConfirm);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put(selectUser.getID(), null);
+                usersRef.updateChildren(childUpdates);
+                confirmDialog.dismiss();
+                updateUserList();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDialog.dismiss();
+            }
+        });
+
+        confirmDialog.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.renameUsername:
+                renameUser();
+                return true;
+            case R.id.deleteUsername:
+                deleteUser();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, Integer.toString(position));
+        PopupMenu popup = new PopupMenu(getContext(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_username_manage, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        selectUsernamePosition = position;
+        popup.show();
     }
 }

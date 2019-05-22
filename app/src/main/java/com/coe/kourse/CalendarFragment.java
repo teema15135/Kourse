@@ -2,6 +2,7 @@ package com.coe.kourse;
 
 import android.app.DatePickerDialog;
 import android.app.usage.UsageEvents;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
@@ -21,17 +23,27 @@ import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.chrono.ThaiBuddhistDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class CalendarFragment extends Fragment {
 
     CompactCalendarView compactCalendarView;
-    TextView txt;
     ListView list;
     ArrayAdapter adapter;
+    String dateString, timeString, monthString;
+    Long dateInMillis, currentDate, dateInMilliseconds;
+    TextView month;
+    Integer rColor;
+    Long rDate;
+    String rdata;
 
     @Nullable
     @Override
@@ -41,8 +53,14 @@ public class CalendarFragment extends Fragment {
         compactCalendarView = view.findViewById(R.id.compactcalendar_view);
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         list = view.findViewById(R.id.listView);
+        month = view.findViewById(R.id.monthtv);
 
-        createEvent();
+        getInput();
+
+        //setDefaultMonth
+        currentDate = compactCalendarView.getFirstDayOfCurrentMonth().getTime();
+        millisToDate(currentDate);
+        month.setText(monthString + "");
 
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
@@ -52,31 +70,65 @@ public class CalendarFragment extends Fragment {
                 List<Event> events = compactCalendarView.getEvents(dateClicked);
                 for(int i=0; i< events.size();i++) {
                     Event e = (Event)events.get(i);
-                    listItems.add(e.getData().toString());
+
+                    //convert timeInmillis to date
+                    dateInMillis = e.getTimeInMillis();
+                    millisToDate(dateInMillis);
+
+                    listItems.add(timeString + "\n" + e.getData().toString());
                 }
                 list.setAdapter(adapter);
-                //list.setBackgroundColor(Color.YELLOW);
+                list.setBackgroundColor(getResources().getColor(R.color.calendar_grey));
             }
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-
+                currentDate = compactCalendarView.getFirstDayOfCurrentMonth().getTime();
+                millisToDate(currentDate);
+                month.setText(monthString + "");
             }
 
         });
-
         return view;
     }
 
-    private void createEvent() {
-        Event ev1 = new Event(Color.WHITE, 1558544400000L, "Quitar Class");
-        compactCalendarView.addEvent(ev1);
-        Event ev2 = new Event(Color.YELLOW, 1558544400000L, "Bimmin is happy");
-        compactCalendarView.addEvent(ev2);
-        Event ev3 = new Event(Color.BLACK, 1558544400000L, "yeah");
-        compactCalendarView.addEvent(ev3);
-        Event ev4 = new Event(Color.BLACK, 1558630800000L, "Can i kick it ? yeah!");
-        compactCalendarView.addEvent(ev4);
+    private  void getInput(){
+        //input Example
+        rColor = Color.YELLOW;
+        dateString = "24-May-2019 00:00";
+        rDate = dateInMilliseconds;
+        rdata = "test";
+        dateToMillis(dateString);
+        createEvent();
+    }
 
+    private void millisToDate (Long dateInMillis){
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM, yyyy");
+        //SimpleDateFormat monthFormatter = new SimpleDateFormat("MM",Locale.forLanguageTag("th"));
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH : mm");
+        /*Date now = new Date();
+        timeString = timeFormatter.format(now);*/
+
+        //set TimeZone
+        monthString = formatter.format(currentDate);
+        timeString = timeFormatter.format(dateInMillis);
+        return;
+    }
+
+    private void dateToMillis (String date) {
+        //dateString = "23-05-2019 00:00:00";
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+        try {
+            Date mDate = dateFormatter.parse(dateString);
+            dateInMilliseconds = mDate.getTime();
+            return;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createEvent() {
+        Event ev = new Event(rColor, rDate, rdata);
+        compactCalendarView.addEvent(ev);
     }
 }

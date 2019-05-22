@@ -1,5 +1,6 @@
 package com.coe.kourse;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -11,11 +12,15 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,13 +48,15 @@ public class HomeUserFragment extends Fragment {
     View scrollView, contentView;
     TextView nameTextView;
 
+    int selectCoursePosition;
+
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
 
     public void setUser(@NonNull User user) {
         try {
-            while(user == null);
+            while (user == null) ;
             Log.d(TAG, "Done wait for null");
             this.userName = user.getName();
             this.courses = user.getCourses();
@@ -95,9 +102,9 @@ public class HomeUserFragment extends Fragment {
         ScrollView scrollView = (ScrollView) this.scrollView;
         scrollView.removeAllViews();
         int numCourse = this.courses.size();
-        for( int i = 0; i < numCourse; i++ ) {
-            if ( courses.get(i).getName().equals("N/A") ) continue;
-            createCourseElements(contentView, courses.get(i).getName(), courses.get(i).getColor(), courses.get(i).getAttend(), courses.get(i).getTotal(), courses.get(i));
+        for (int i = 0; i < numCourse; i++) {
+            if (courses.get(i).getName().equals("N/A")) continue;
+            createCourseElements(contentView, courses.get(i).getName(), courses.get(i).getColor(), courses.get(i).getAttend(), courses.get(i).getTotal(), courses.get(i), i);
         }
         if (this.courses.size() == 1) {
             LinearLayout linearLayout = new LinearLayout(getActivity());
@@ -110,19 +117,14 @@ public class HomeUserFragment extends Fragment {
             textView.setGravity(Gravity.CENTER);
             textView.setText("This user have no course added");
 
-            ImageView imageView = new ImageView(getActivity());
-            imageView.setImageResource(R.drawable.sad_emoji);
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
             linearLayout.addView(textView);
-            linearLayout.addView(imageView);
 
             contentView.addView(linearLayout);
         }
         scrollView.addView(contentView);
     }
 
-    private void createCourseElements(LinearLayout main, String sCourse, String sColor, int stampAttend, int stampAmount, Course course) {
+    private void createCourseElements(LinearLayout main, String sCourse, String sColor, int stampAttend, int stampAmount, Course course, int index) {
 
         LinearLayout.LayoutParams mainPrams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams lprams = new LinearLayout.LayoutParams(widthLayout, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -149,6 +151,32 @@ public class HomeUserFragment extends Fragment {
         row.setPadding(paddingLeftLayout, paddingLayout, paddingLeftLayout, paddingLayout);
         row.setLayoutParams(sublprams);
         row.setBackground(getDrawableWithRadius(sColor));
+
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popup = new PopupMenu(getContext(), v);
+                MenuInflater inflater = popup.getMenuInflater();
+                selectCoursePosition = index;
+                inflater.inflate(R.menu.menu_username_manage, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.renameUsername:
+                                renameCourse();
+                                return true;
+                            case R.id.deleteUsername:
+                                deleteCourse();
+                                return true;
+                            default: return false;
+                        }
+                    }
+                });
+                popup.show();
+                return true;
+            }
+        });
 
         TextView showCourse = new TextView(getActivity());
         showCourse.setText(sCourse);
@@ -271,21 +299,112 @@ public class HomeUserFragment extends Fragment {
 
     private String getLighterColor(String color) {
         switch (color) {
-            case "#40a2b7" : return "#a4d5e0";
-            case "#b3d53f" : return "#d8e8a0";
-            case "#ffab2d": return "#fdffcc";
-            case "#ff5855" : return "#ffb0ae";
-            default: return "#b9b0a2";
+            case "#40a2b7":
+                return "#a4d5e0";
+            case "#b3d53f":
+                return "#d8e8a0";
+            case "#ffab2d":
+                return "#fdffcc";
+            case "#ff5855":
+                return "#ffb0ae";
+            default:
+                return "#b9b0a2";
         }
     }
 
     private int getSelectStampResource(String color) {
         switch (color) {
-            case "#40a2b7" : return R.drawable.stamp_select_blue;
-            case "#b3d53f" : return R.drawable.stamp_select_green;
-            case "#ffab2d": return R.drawable.stamp_select_orange;
-            case "#ff5855" : return R.drawable.stamp_select_red;
-            default: return R.drawable.stamp_select_orange;
+            case "#40a2b7":
+                return R.drawable.stamp_select_blue;
+            case "#b3d53f":
+                return R.drawable.stamp_select_green;
+            case "#ffab2d":
+                return R.drawable.stamp_select_orange;
+            case "#ff5855":
+                return R.drawable.stamp_select_red;
+            default:
+                return R.drawable.stamp_select_orange;
         }
+    }
+
+    private void renameCourse() {
+        Log.d(TAG, "Course rename");
+        Course selectCourse = courses.get(selectCoursePosition);
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_profile_person);
+
+        final EditText namePerson = (EditText) dialog.findViewById(R.id.profile_dialog_name);
+        Button buttonCancel = (Button) dialog.findViewById(R.id.profile_btn_cancel);
+        Button buttonOK = (Button) dialog.findViewById(R.id.profile_btn_ok);
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Push update to Firebase Database
+                String name = namePerson.getText().toString();
+                String userID = user.getID();
+                courses.get(selectCoursePosition).name = name;
+
+                String accountUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                        .child("accounts")
+                        .child(accountUID)
+                        .child("users")
+                        .child(userID);
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("courses", courses);
+                userRef.updateChildren(childUpdates);
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void deleteCourse() {
+        Log.d(TAG, "Course delete");
+        Dialog confirmDialog = new Dialog(getContext());
+        confirmDialog.setContentView(R.layout.dialog_confirm);
+
+        Button okButton = (Button) confirmDialog.findViewById(R.id.okConfirm);
+        Button cancelButton = (Button) confirmDialog.findViewById(R.id.cancelConfirm);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userID = user.getID();
+                courses.remove(selectCoursePosition);
+
+                String accountUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                        .child("accounts")
+                        .child(accountUID)
+                        .child("users")
+                        .child(userID);
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("courses", courses);
+                userRef.updateChildren(childUpdates);
+
+                confirmDialog.dismiss();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDialog.dismiss();
+            }
+        });
+
+        confirmDialog.show();
     }
 }
