@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -32,11 +33,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNav = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(this);
 
-        if(getIntent().getStringExtra("Page").equals("Reminder"))
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                notificationFragment).commit();
-        else getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                homeFragment).commit();
+        String page = getIntent().getStringExtra("Page");
+        Log.d("Page", page);
+
+        switch (page) {
+            default:
+            case "Home" : getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    homeFragment).commit(); break;
+            case "Reminder" : getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    notificationFragment).commit(); break;
+        }
+
     }
 
     @Override
