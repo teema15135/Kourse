@@ -1,6 +1,8 @@
 package com.coe.kourse;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -18,12 +20,17 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +39,8 @@ import com.coe.kourse.data.AlarmReminderContract;
 import com.coe.kourse.data.AlarmReminderDbHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
@@ -51,6 +60,14 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
     private String alarmTitle = "";
     private static final int VEHICLE_LOADER = 0;
 
+    EditText nameReminder, infoReminder, dateReminder, timeReminder;
+    boolean datePicked;
+    Calendar calendar;
+    Date payDay;
+    final String[] MONTH_NAME = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    int year, month, dayOfMonth;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +76,7 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-        mToolbar.setTitle(R.string.app_name);
+        mToolbar.setTitle(R.string.reminder_title);
 
 
         reminderListView = (ListView) view.findViewById(R.id.list);
@@ -145,23 +162,60 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
     }
 
-    public void addReminderTitle(){
+    public void addReminderTitle() {
+        final Dialog dialogReminder = new Dialog(getActivity());
+        dialogReminder.setContentView(R.layout.dialog_add_reminder);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Set Reminder Title");
+        nameReminder = (EditText) dialogReminder.findViewById(R.id.reminder_name_edt);
+        timeReminder = (EditText) dialogReminder.findViewById(R.id.reminder_time_edt);
+        Button buttonCancel = (Button) dialogReminder.findViewById(R.id.reminder_btn_cancel);
+        Button buttonOK = (Button) dialogReminder.findViewById(R.id.reminder_btn_ok);
 
-        final EditText input = new EditText(getActivity());
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+        ImageButton selectDate = (ImageButton) dialogReminder.findViewById(R.id.btn_calendar);
+        TextView txtshowDate = dialogReminder.findViewById(R.id.reminder_date_txt);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+        View.OnClickListener selDateListener = new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (input.getText().toString().isEmpty()){
+            public void onClick(View view) {
+
+                calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                txtshowDate.setText(day + "/" + month + "/" + year);
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.show();
+                Log.d("TAGG", "dialog show");
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            }
+
+        };
+
+        selectDate.setOnClickListener(selDateListener);
+        txtshowDate.setOnClickListener(selDateListener);
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogReminder.dismiss();
+            }
+        });
+
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nameReminder.getText().toString().isEmpty()){
                     return;
                 }
 
-                alarmTitle = input.getText().toString();
+                alarmTitle = nameReminder.getText().toString();
                 ContentValues values = new ContentValues();
 
                 values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, alarmTitle);
@@ -170,24 +224,57 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
                 restartLoader();
 
-
-                if (newUri == null) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Setting Reminder Title failed", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "Title set successfully", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+                dialogReminder.dismiss();
             }
         });
 
-        builder.show();
+        dialogReminder.show();
+
     }
+
+//    public void addReminderTitle(){
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setTitle("Set Reminder Title");
+//
+//        final EditText input = new EditText(getActivity());
+//        input.setInputType(InputType.TYPE_CLASS_TEXT);
+//        builder.setView(input);
+//
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                if (input.getText().toString().isEmpty()){
+//                    return;
+//                }
+//
+//                alarmTitle = input.getText().toString();
+//                ContentValues values = new ContentValues();
+//
+//                values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, alarmTitle);
+//
+//                Uri newUri = getActivity().getContentResolver().insert(AlarmReminderContract.AlarmReminderEntry.CONTENT_URI, values);
+//
+//                restartLoader();
+//
+//
+//                if (newUri == null) {
+//                    Toast.makeText(getActivity().getApplicationContext(), "Setting Reminder Title failed", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getActivity().getApplicationContext(), "Title set successfully", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        });
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//
+//        builder.show();
+//    }
 
     public void restartLoader(){
         LoaderManager.getInstance(this).restartLoader(VEHICLE_LOADER, null, this);

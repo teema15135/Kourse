@@ -24,6 +24,10 @@
     <string name="profile_cancel">Cancel</string>
     <string name="email">Email</string>
 
+    <string name="add_reminder_info">Info</string>
+    <string name="add_reminder_Date">Date</string>
+    <string name="add_reminder_Time">Time</string>
+
     <string name="no_cardetails">Click on the button below to begin creating your reminder!</string>
     <string name="title_activity_add_reminder">Add Reminder</string>
     <string name="title_activity_edit_reminder">Edit Reminder</string>
