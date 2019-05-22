@@ -32,10 +32,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNav = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+        if(getIntent().getStringExtra("Page").equals("Reminder"))
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                notificationFragment).commit();
+        else getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 homeFragment).commit();
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

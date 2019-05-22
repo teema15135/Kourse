@@ -42,19 +42,19 @@
             android:layout_height="match_parent">
 
             <View
-                android:elevation="2dp"
                 android:id="@+id/above_username_margin"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:background="@color/white" />
+                android:layout_height="10dp"
+                android:background="@color/white"
+                android:elevation="2dp" />
 
             <LinearLayout
-                android:elevation="2dp"
                 android:id="@+id/username_banner"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_below="@id/above_username_margin"
                 android:background="@color/colorAccent"
+                android:elevation="2dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -65,12 +65,13 @@
                     android:fontFamily="@font/rsu"
                     android:text="All Course of "
                     android:textColor="@color/white"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/usernameHomeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/rsu"
                     android:textColor="#000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -78,19 +79,28 @@
             </LinearLayout>
 
             <View
-                android:elevation="2dp"
-                android:layout_below="@id/username_banner"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@drawable/white_transparent_gradient" />
+                android:layout_below="@id/username_banner"
+                android:background="@drawable/white_transparent_gradient"
+                android:elevation="2dp" />
 
             <FrameLayout
-                android:elevation="1dp"
-                android:layout_below="@id/username_banner"
                 android:id="@+id/fragment_sweep_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:foregroundGravity="center_horizontal" />
+                android:layout_below="@id/username_banner"
+                android:elevation="1dp"
+                android:foregroundGravity="center_horizontal">
+
+                <ProgressBar
+                    android:id="@+id/homeLoadingProgressBar"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true" />
+
+            </FrameLayout>
 
         </RelativeLayout>
 
