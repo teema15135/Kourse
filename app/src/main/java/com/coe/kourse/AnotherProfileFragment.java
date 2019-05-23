@@ -48,7 +48,7 @@ public class AnotherProfileFragment extends Fragment implements PopupMenu.OnMenu
 
     CircleImageView profileImage;
     Button dialogButton;
-    ImageView logoutImage;
+//    ImageView logoutImage;
     TextView user, logoutTextView;
     String name;
     ListView listView;
@@ -123,7 +123,7 @@ public class AnotherProfileFragment extends Fragment implements PopupMenu.OnMenu
 
     private void initializeViews() {
         profileImage = view.findViewById(R.id.a_profile_img);
-        logoutImage = view.findViewById(R.id.logoutImageButton);
+//        logoutImage = view.findViewById(R.id.logoutImageButton);
         logoutTextView = view.findViewById(R.id.logoutTextView);
         dialogButton = view.findViewById(R.id.a_profile_btn_person);
         user = view.findViewById(R.id.a_profile_gmail);
@@ -173,7 +173,7 @@ public class AnotherProfileFragment extends Fragment implements PopupMenu.OnMenu
             }
         };
         logoutTextView.setOnClickListener(logoutListener);
-        logoutImage.setOnClickListener(logoutListener);
+//        logoutImage.setOnClickListener(logoutListener);
     }
 
     private void updateProfileInfo() {
