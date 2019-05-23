@@ -2,6 +2,7 @@ package com.coe.kourse;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -43,6 +44,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.coe.kourse.data.AlarmReminderContract;
@@ -54,6 +56,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +110,7 @@ public class HomeFragment extends Fragment {
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
-    EditText nameCourse, totalCourse, payAmount, payDate;
+    EditText nameCourse, totalCourse, payAmount, payDate, startDate;
     RadioGroup typeRadioGroup;
     RadioButton nonFixTimeTypeRadioButton, fixTimeTypeRadioButton;
     int stampAmount;
@@ -123,6 +127,8 @@ public class HomeFragment extends Fragment {
     private WeekdaysPicker widget;
     private List<Integer> selected_days;
     private TextView tv_selected_days;
+
+    int year, month, dayOfMonth, hour, minute;
 
 
     @Nullable
@@ -215,6 +221,7 @@ public class HomeFragment extends Fragment {
                 totalCourse = (EditText) dialog.findViewById(R.id.add_total_edittext);
                 payAmount = (EditText) dialog.findViewById(R.id.add_pay_edittext);
                 payDate = (EditText) dialog.findViewById(R.id.add_due_edittext);
+                startDate = (EditText) dialog.findViewById(R.id.add_start_edt);
                 Button buttonCancel = (Button) dialog.findViewById(R.id.home_btn_cancel);
                 Button buttonOK = (Button) dialog.findViewById(R.id.home_btn_ok);
 
@@ -223,7 +230,9 @@ public class HomeFragment extends Fragment {
                 Button buttonRed = (Button) dialog.findViewById(R.id.add_red_button);
                 Button buttonYellow = (Button) dialog.findViewById(R.id.add_yellow_button);
 
-                tv_selected_days = (TextView) dialog.findViewById(R.id.tv_selected_days);
+                ImageButton selectTime = (ImageButton) dialog.findViewById(R.id.btn_time);
+                TextView txtshowTime = (TextView) dialog.findViewById(R.id.txt_time_picker);
+
 
                 // just set Drawable of color buttons
                 GradientDrawable blueSelected = new GradientDrawable();
@@ -337,6 +346,50 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                startDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                datePicked = true;
+                                payDay = new Date();
+                                payDay.setYear(year);
+                                payDay.setMonth(month);
+                                payDay.setDate(dayOfMonth);
+                                payDay.setHours(1);
+                                startDate.setText(payDay.getDay() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
+                            }
+                        };
+                        DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DATE));
+                        dpd.getDatePicker().setMinDate(System.currentTimeMillis());
+                        dpd.show();
+                    }
+                });
+
+                selectTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        Calendar mcurrentTime = Calendar.getInstance();
+                        hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                        minute = mcurrentTime.get(Calendar.MINUTE);
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                txtshowTime.setText( selectedHour + ":" + selectedMinute);
+                            }
+                        }, hour, minute, true);//Yes 24 hour time
+                        mTimePicker.setTitle("Select Time");
+                        mTimePicker.show();
+
+                    }
+                });
+
 
                 selected_days = Arrays.asList(Calendar.SATURDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.SUNDAY);
                 mp.put(SUNDAY, true);
@@ -350,7 +403,7 @@ public class HomeFragment extends Fragment {
                 widget.setOnWeekdaysChangeListener(new OnWeekdaysChangeListener() {
                     @Override
                     public void onChange(View view, int clickedDayOfWeek, List<Integer> selectedDays) {
-                tv_selected_days.setText("Selected days: " + Arrays.toString(selectedDays.toArray()));
+//                tv_selected_days.setText("Selected days: " + Arrays.toString(selectedDays.toArray()));
                 
                     }
                 });

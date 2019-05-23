@@ -146,7 +146,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:focusable="false"
-                android:textSize="12dp"
+                android:textSize="13sp"
                 android:hint="Select start date..." />
         </LinearLayout>
 
@@ -159,7 +159,7 @@
         <!-- course time -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -185,22 +185,38 @@
                     app:highlight_color="@color/blue_pastel"
                     app:sunday_first_day="false" />
 
-                <TextView
-                    android:id="@+id/tv_selected_days"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/weekdays"
-                    android:textSize="12sp"
-                    android:text="Selected days:" />
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_selected_days"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/weekdays"-->
+                    <!--android:textSize="12sp"-->
+                    <!--android:text="Selected days:" />-->
 
-                <EditText
-                    android:id="@+id/add_ctime_time"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:focusable="false"
-                    android:hint="Select time ..." />
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/btn_time"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="2dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:background="@null"
+                        android:src="@drawable/ic_clock"/>
+                    <TextView
+                        android:id="@+id/txt_time_picker"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="please click on clock icon"
+                        android:textSize="13dp"/>
+                </LinearLayout>
+
             </LinearLayout>
 
 
@@ -264,6 +280,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:focusable="false"
+                android:textSize="13sp"
                 android:hint="Select pay date..." />
         </LinearLayout>
 
