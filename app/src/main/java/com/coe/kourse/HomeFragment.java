@@ -145,8 +145,6 @@ public class HomeFragment extends Fragment {
         fragment = MainActivity.notificationFragment;
 
 
-
-
         initializeFirebaseComponent();
         initializeViews();
         addViewListeners();
@@ -334,7 +332,7 @@ public class HomeFragment extends Fragment {
                                 payDay.setMonth(month);
                                 payDay.setDate(dayOfMonth);
                                 payDay.setHours(1);
-                                payDate.setText(payDay.getDay() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
+                                payDate.setText(payDay.getDate() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
                             }
                         };
                         DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
@@ -381,7 +379,7 @@ public class HomeFragment extends Fragment {
                         mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                txtshowTime.setText( selectedHour + ":" + selectedMinute);
+                                txtshowTime.setText(selectedHour + ":" + selectedMinute);
                             }
                         }, hour, minute, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
@@ -399,12 +397,14 @@ public class HomeFragment extends Fragment {
                 mp.put(TUESDAY, true);
                 mp.put(SATURDAY, false); //For duplicated values, the first one is counting, but the last one is updating the selected value
 
+                ArrayList<Integer> days = new ArrayList<>();
+
                 WeekdaysPicker widget = (WeekdaysPicker) dialog.findViewById(R.id.weekdays);
                 widget.setOnWeekdaysChangeListener(new OnWeekdaysChangeListener() {
                     @Override
                     public void onChange(View view, int clickedDayOfWeek, List<Integer> selectedDays) {
 //                tv_selected_days.setText("Selected days: " + Arrays.toString(selectedDays.toArray()));
-                
+                        days.addAll(selectedDays);
                     }
                 });
 
@@ -432,13 +432,26 @@ public class HomeFragment extends Fragment {
                         String sPayAmount = payAmount.getText().toString();
                         String sPayDate = payDate.getText().toString();
 
-                        Course course = new Course(sCourse, sColor, stampAmount, timeType);
+                        String sStartDate = startDate.getText().toString();
+                        String sTime = txtshowTime.getText().toString();
 
-                        if (!(false || false)) {
+                        Course course = new Course(sCourse, sColor, stampAmount, timeType, "N/A", "N/A", "N/A");
+
+                        if (!(sTime.isEmpty() || sStartDate.isEmpty() || timeType == 0)) {
                             /*
                              * if not start date or time aren't empty or timeType == 0
                              * change course.start, course.time and course.date
                              */
+                            String sDay = "";
+
+                            for (int k = 0; k < days.size(); k++) {
+                                sDay += Integer.toString(days.get(k) - 1);
+                            }
+
+                            course.start = sStartDate;
+                            course.time = sTime;
+                            course.date = sDay;
+
                         }
 
                         User currentUser = userList.get(currentUserIndex);
@@ -449,8 +462,9 @@ public class HomeFragment extends Fragment {
                         childUpdates.put(currentUser.getID(), userMap);
                         usersRef.updateChildren(childUpdates);
 
+                        Log.d("TAG", "payamount : " + sPayAmount + " payDate : " + sPayDate);
                         if (!(sPayAmount.isEmpty() || sPayDate.isEmpty())) {
-
+                            Log.d("TAG", "Go into if");
                             /**
                              * send data to another fragment
                              */
@@ -480,7 +494,7 @@ public class HomeFragment extends Fragment {
     private void updateBullet() {
         bulletPageIndicator.removeAllViews();
         int numBullet = userFragmentList.size();
-        for(int i = 0; i < numBullet; i++) {
+        for (int i = 0; i < numBullet; i++) {
             ImageView imageView = new ImageView(getContext());
             imageView.setPadding(8, 0, 8, 0);
             imageView.setImageResource((i == currentUserIndex ? R.drawable.bullet_selected : R.drawable.bullet_unselected));
