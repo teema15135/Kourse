@@ -12,6 +12,7 @@ public class Course {
     public String name;
     public String color;
 
+    public String start;
     public String date;
     public String time;
 
@@ -24,13 +25,16 @@ public class Course {
         super();
     }
 
-    public Course(String courseName, String courseColor, int total, int type) {
+    public Course(String courseName, String courseColor, int total, int type, String start, String date, String time) {
         this.id = Long.toString(System.currentTimeMillis());
         this.name = courseName;
         this.color = courseColor;
         this.total = total;
         this.attend = 0;
         this.type = type;
+        this.start = start;
+        this.date = date;
+        this.time = time;
     }
 
     public void attend() {

@@ -22,8 +22,12 @@ import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,8 +51,12 @@ public class CalendarFragment extends Fragment {
     Long rDate;
     String rdata;
 
+    FirebaseAuth auth;
     FirebaseDatabase database;
-    DatabaseReference rootRef;
+    DatabaseReference rootRef, usersRef;
+    String accountUID;
+
+    ArrayList<Course> allCourse;
 
     @Nullable
     @Override
@@ -97,20 +105,72 @@ public class CalendarFragment extends Fragment {
 
         });
 
-
-
         return view;
     }
 
     private void initializeFirebaseInstance() {
+        auth = FirebaseAuth.getInstance();
+        accountUID = auth.getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         rootRef = database.getReference();
+        usersRef = rootRef.child("accounts")
+                .child(accountUID)
+                .child("users");
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                allCourse = new ArrayList<>();
+                clearEvent();
+                for (DataSnapshot unique : dataSnapshot.getChildren()) {
+                    // Get all course of all users
+                    User user = unique.getValue(User.class);
+                    allCourse.addAll(user.getCourses());
+                    updateCalendarEvents();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        };
+
+        usersRef.addValueEventListener(listener);
+    }
+
+    private void updateCalendarEvents() {
+        for (Course course : allCourse ) {
+            if (course.type == 0) continue;
+            int color = Integer.parseInt("FF" + course.color.split("#")[1], 16);
+            for (Long rDate : getAllDateOfCourse(course)) {
+                createEvent(color, rDate, course.getName());
+            }
+        }
+    }
+
+    private ArrayList<Long> getAllDateOfCourse(Course course) {
+        ArrayList<Long> result = new ArrayList<>();
+        String start = course.start;
+        String sDate = course.date;
+        String time = course.time;
+        int total = course.total;
+
+        dateToMillis(start + " " + time);
+        Date date = new Date(dateInMilliseconds);
+        for (int i = 0; i < total; ) {
+            if (sDate.contains(Integer.toString(date.getDay()))) {
+                result.add(date.getTime());
+                i++;
+            }
+            date.setDate(date.getDate() + 1);
+        }
+
+        return result;
     }
 
     private  void getInput(){
         //input Example
         rColor = Color.YELLOW;
-        dateString = "24-May-2019 00:00";
+        dateString = "24-05-2019 00:00";
         dateToMillis(dateString);
         rDate = dateInMilliseconds;
         rdata = "test";
@@ -132,7 +192,7 @@ public class CalendarFragment extends Fragment {
 
     private void dateToMillis (String date) {
         //dateString = "23-05-2019 00:00:00";
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         try {
             Date mDate = dateFormatter.parse(dateString);
             dateInMilliseconds = mDate.getTime();
@@ -140,6 +200,10 @@ public class CalendarFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    private void clearEvent() {
+        compactCalendarView.removeAllEvents();
     }
 
     private void createEvent() {
