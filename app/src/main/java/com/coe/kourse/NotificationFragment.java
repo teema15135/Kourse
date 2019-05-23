@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,16 +40,21 @@ import android.support.v7.widget.Toolbar;
 
 import com.coe.kourse.data.AlarmReminderContract;
 import com.coe.kourse.data.AlarmReminderDbHelper;
+import com.dpro.widgets.OnWeekdaysChangeListener;
+import com.dpro.widgets.WeekdaysPicker;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
-public class NotificationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class NotificationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CompoundButton.OnCheckedChangeListener {
 
 
     ArrayList<CourseEvent> events;
@@ -74,6 +80,7 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
     String receivedTitle="", receivedDate="", receivedTime="";
     ContentValues values;
+
 
     @Nullable
     @Override
@@ -197,6 +204,8 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
         TextView txtshowTime = dialogReminder.findViewById(R.id.reminder_time_txt);
 
 
+
+
         View.OnClickListener selDateListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,6 +251,7 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
         });
 
 
+
         selectDate.setOnClickListener(selDateListener);
         txtshowDate.setOnClickListener(selDateListener);
 
@@ -282,5 +292,14 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
 
     public void restartLoader(){
         LoaderManager.getInstance(this).restartLoader(VEHICLE_LOADER, null, this);
+    }
+
+    public void weekly() {
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
     }
 }

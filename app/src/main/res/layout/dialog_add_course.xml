@@ -125,11 +125,10 @@
             android:layout_marginTop="7dp"
             android:background="@color/gray_list" />
 
-        <!-- time -->
+        <!-- start -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -138,14 +137,89 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/add_course_time" />
+                android:text="@string/start_date" />
 
             <EditText
-                android:id="@+id/add_time_edittext"
+                android:id="@+id/add_start_edt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@null" />
+                android:background="@null"
+                android:focusable="false"
+                android:textSize="13sp"
+                android:hint="Select start date..." />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="7dp"
+            android:background="@color/gray_list" />
+
+        <!-- course time -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/add_course_time" />
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.dpro.widgets.WeekdaysPicker
+                    android:id="@+id/weekdays"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    app:recurrence="false"
+                    app:highlight_color="@color/blue_pastel"
+                    app:sunday_first_day="false" />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_selected_days"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/weekdays"-->
+                    <!--android:textSize="12sp"-->
+                    <!--android:text="Selected days:" />-->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/btn_time"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="2dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:background="@null"
+                        android:src="@drawable/ic_clock"/>
+                    <TextView
+                        android:id="@+id/txt_time_picker"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="please click on clock icon"
+                        android:textSize="13dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <View
@@ -206,6 +280,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:focusable="false"
+                android:textSize="13sp"
                 android:hint="Select pay date..." />
         </LinearLayout>
 
@@ -310,6 +385,8 @@
             android:background="@null"
             android:text="@string/profile_ok"
             android:textAllCaps="false" />
+
     </LinearLayout>
+
 
 </LinearLayout>

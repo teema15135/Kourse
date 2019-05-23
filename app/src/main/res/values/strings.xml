@@ -58,6 +58,7 @@
     <string name="editor_update_reminder_failed">Error with updating reminder</string>
     <string name="rename">Rename</string>
     <string name="u"><![CDATA[<]]></string>
+    <string name="start_date">Start date</string>
 
 
 </resources>

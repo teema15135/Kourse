@@ -2,6 +2,7 @@ package com.coe.kourse;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -43,9 +44,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.coe.kourse.data.AlarmReminderContract;
+import com.dpro.widgets.OnWeekdaysChangeListener;
+import com.dpro.widgets.WeekdaysPicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,12 +57,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Calendar.FRIDAY;
+import static java.util.Calendar.SATURDAY;
+import static java.util.Calendar.SUNDAY;
+import static java.util.Calendar.THURSDAY;
+import static java.util.Calendar.TUESDAY;
 
 
 public class HomeFragment extends Fragment {
@@ -91,12 +105,12 @@ public class HomeFragment extends Fragment {
     ProgressBar homeLoadingProgressBar;
     LinearLayout bulletPageIndicator;
 
-    String sCourse, sColor, sStampAmount, sMoney;
+    String sCourse, sColor, sStampAmount;
     LinearLayout linearSwipe;
     int widthLayout, heightLayout,
             marginBottomLayout, paddingLayout, paddingLeftLayout,
             widthHeightStampbtn, marginStamp;
-    EditText nameCourse, totalCourse, payAmount, payDate;
+    EditText nameCourse, totalCourse, payAmount, payDate, startDate;
     RadioGroup typeRadioGroup;
     RadioButton nonFixTimeTypeRadioButton, fixTimeTypeRadioButton;
     int stampAmount;
@@ -108,6 +122,14 @@ public class HomeFragment extends Fragment {
     Date payDay;
 
     Fragment fragment;
+
+    private final LinkedHashMap<Integer, Boolean> mp = new LinkedHashMap<>();
+    private WeekdaysPicker widget;
+    private List<Integer> selected_days;
+    private TextView tv_selected_days;
+
+    int year, month, dayOfMonth, hour, minute;
+
 
     @Nullable
     @Override
@@ -121,6 +143,8 @@ public class HomeFragment extends Fragment {
         allUserCourseList = new ArrayList<>();
 
         fragment = MainActivity.notificationFragment;
+
+
 
 
         initializeFirebaseComponent();
@@ -197,6 +221,7 @@ public class HomeFragment extends Fragment {
                 totalCourse = (EditText) dialog.findViewById(R.id.add_total_edittext);
                 payAmount = (EditText) dialog.findViewById(R.id.add_pay_edittext);
                 payDate = (EditText) dialog.findViewById(R.id.add_due_edittext);
+                startDate = (EditText) dialog.findViewById(R.id.add_start_edt);
                 Button buttonCancel = (Button) dialog.findViewById(R.id.home_btn_cancel);
                 Button buttonOK = (Button) dialog.findViewById(R.id.home_btn_ok);
 
@@ -204,6 +229,9 @@ public class HomeFragment extends Fragment {
                 Button buttonGreen = (Button) dialog.findViewById(R.id.add_green_button);
                 Button buttonRed = (Button) dialog.findViewById(R.id.add_red_button);
                 Button buttonYellow = (Button) dialog.findViewById(R.id.add_yellow_button);
+
+                ImageButton selectTime = (ImageButton) dialog.findViewById(R.id.btn_time);
+                TextView txtshowTime = (TextView) dialog.findViewById(R.id.txt_time_picker);
 
 
                 // just set Drawable of color buttons
@@ -318,6 +346,68 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                startDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                datePicked = true;
+                                payDay = new Date();
+                                payDay.setYear(year);
+                                payDay.setMonth(month);
+                                payDay.setDate(dayOfMonth);
+                                payDay.setHours(1);
+                                startDate.setText(payDay.getDay() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
+                            }
+                        };
+                        DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DATE));
+                        dpd.getDatePicker().setMinDate(System.currentTimeMillis());
+                        dpd.show();
+                    }
+                });
+
+                selectTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        Calendar mcurrentTime = Calendar.getInstance();
+                        hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                        minute = mcurrentTime.get(Calendar.MINUTE);
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                txtshowTime.setText( selectedHour + ":" + selectedMinute);
+                            }
+                        }, hour, minute, true);//Yes 24 hour time
+                        mTimePicker.setTitle("Select Time");
+                        mTimePicker.show();
+
+                    }
+                });
+
+
+                selected_days = Arrays.asList(Calendar.SATURDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.SUNDAY);
+                mp.put(SUNDAY, true);
+                mp.put(SATURDAY, true);
+                mp.put(THURSDAY, false);
+                mp.put(FRIDAY, true);
+                mp.put(TUESDAY, true);
+                mp.put(SATURDAY, false); //For duplicated values, the first one is counting, but the last one is updating the selected value
+
+                WeekdaysPicker widget = (WeekdaysPicker) dialog.findViewById(R.id.weekdays);
+                widget.setOnWeekdaysChangeListener(new OnWeekdaysChangeListener() {
+                    @Override
+                    public void onChange(View view, int clickedDayOfWeek, List<Integer> selectedDays) {
+//                tv_selected_days.setText("Selected days: " + Arrays.toString(selectedDays.toArray()));
+                
+                    }
+                });
+
                 // when click ok or cancel button
 
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
@@ -335,7 +425,6 @@ public class HomeFragment extends Fragment {
                         if (fixTimeTypeRadioButton.isChecked()) timeType = 1;
 
                         sCourse = nameCourse.getText().toString();
-                        sMoney = payAmount.getText().toString();
                         sColor = (sColor == null ? "#b3d53f" : sColor);
                         sStampAmount = totalCourse.getText().toString(); // May cause Number Exception
                         stampAmount = Integer.parseInt(sStampAmount);
@@ -345,6 +434,13 @@ public class HomeFragment extends Fragment {
 
                         Course course = new Course(sCourse, sColor, stampAmount, timeType);
 
+                        if (!(false || false)) {
+                            /*
+                             * if not start date or time aren't empty or timeType == 0
+                             * change course.start, course.time and course.date
+                             */
+                        }
+
                         User currentUser = userList.get(currentUserIndex);
                         currentUser.addCourse(course);
                         Map<String, Object> userMap = currentUser.toMap();
@@ -353,30 +449,25 @@ public class HomeFragment extends Fragment {
                         childUpdates.put(currentUser.getID(), userMap);
                         usersRef.updateChildren(childUpdates);
 
-                        if (!(payAmount.getText().toString().isEmpty() || payDate.getText().toString().isEmpty())) {
-                           /*
-                            *
-                            *
-                            *
-                            */
+                        if (!(sPayAmount.isEmpty() || sPayDate.isEmpty())) {
+
+                            /**
+                             * send data to another fragment
+                             */
+                            Bundle bundle = new Bundle();
+                            bundle.putString("date", payDate.getText().toString()); // Key, value
+                            bundle.putString("time", "08:00");
+                            bundle.putString("title", sCourse + " : payment amount " + sPayDate);
+
+                            fragment.setArguments(bundle);
+                            getFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, fragment)
+                                    .commit();
+
+                            MainActivity.isHome = false;
                         }
 
-                        /**
-                         * send data to another fragment
-                         */
-                        Bundle bundle = new Bundle();
-                        bundle.putString("date", payDate.getText().toString()); // Key, value
-                        bundle.putString("time", "08:00");
-                        bundle.putString("title", sCourse + " : payment amount " + sMoney);
-
-                        fragment.setArguments(bundle);
-                        getFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_container, fragment)
-                                .commit();
-
-
-                        MainActivity.isHome = false;
 
                         dialog.dismiss();
                     }

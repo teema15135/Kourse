@@ -47,7 +47,8 @@ dependencies {
     implementation 'com.bignerdranch.android:recyclerview-multiselect:+'
     implementation 'com.wrapp.floatlabelededittext:library:0.0.6'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.github.sundeepk:compact-calendar-view:3.0.0'
+    implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
+    implementation 'com.github.DavidProdinger:weekdays-selector:1.1.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'
