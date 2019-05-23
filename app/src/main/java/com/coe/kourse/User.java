@@ -22,7 +22,7 @@ public class User {
         this.name = name;
         this.id = Long.toString(System.currentTimeMillis());
         courses = new ArrayList<>();
-        Course course = new Course("N/A", "N/A", 0, 0);
+        Course course = new Course("N/A", "N/A", 0, 0, "N/A", "N/A", "N/A");
         courses.add(course);
     }
 

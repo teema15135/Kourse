@@ -94,6 +94,8 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
             receivedDate = bundle.getString("date");
             receivedTime = bundle.getString("time");
 
+            Log.d("Notification", "GOT");
+
             values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TITLE, receivedTitle);
             values.put(AlarmReminderContract.AlarmReminderEntry.KEY_DATE, receivedDate);
             values.put(AlarmReminderContract.AlarmReminderEntry.KEY_TIME, receivedTime);

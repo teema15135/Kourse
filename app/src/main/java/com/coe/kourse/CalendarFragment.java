@@ -140,7 +140,7 @@ public class CalendarFragment extends Fragment {
     private void updateCalendarEvents() {
         for (Course course : allCourse ) {
             if (course.type == 0) continue;
-            int color = Integer.parseInt("FF" + course.color.split("#")[1], 16);
+            int color = Color.parseColor("#FF" + course.color.split("#")[1].toUpperCase());
             for (Long rDate : getAllDateOfCourse(course)) {
                 createEvent(color, rDate, course.getName());
             }
@@ -152,6 +152,7 @@ public class CalendarFragment extends Fragment {
         String start = course.start;
         String sDate = course.date;
         String time = course.time;
+        if (start.equals("N/A") || sDate.equals("N/A") || time.equals("N/A")) return result;
         int total = course.total;
 
         dateToMillis(start + " " + time);
