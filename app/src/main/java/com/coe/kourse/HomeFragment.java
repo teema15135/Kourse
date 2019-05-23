@@ -404,6 +404,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onChange(View view, int clickedDayOfWeek, List<Integer> selectedDays) {
 //                tv_selected_days.setText("Selected days: " + Arrays.toString(selectedDays.toArray()));
+                        days.removeAll(days);
                         days.addAll(selectedDays);
                     }
                 });
@@ -447,6 +448,8 @@ public class HomeFragment extends Fragment {
                             for (int k = 0; k < days.size(); k++) {
                                 sDay += Integer.toString(days.get(k) - 1);
                             }
+
+                            Log.d(TAG, sDay);
 
                             course.start = sStartDate;
                             course.time = sTime;
