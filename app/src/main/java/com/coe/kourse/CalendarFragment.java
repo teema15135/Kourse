@@ -70,7 +70,7 @@ public class CalendarFragment extends Fragment {
 
         initializeFirebaseInstance();
 
-        getInput();
+        //getInput();
 
         //setDefaultMonth
         currentDate = compactCalendarView.getFirstDayOfCurrentMonth().getTime();
@@ -128,6 +128,7 @@ public class CalendarFragment extends Fragment {
                     allCourse.addAll(user.getCourses());
                     updateCalendarEvents();
                 }
+                Log.d("Calendar", allCourse.toString());
             }
 
             @Override
@@ -154,8 +155,8 @@ public class CalendarFragment extends Fragment {
         String time = course.time;
         if (start.equals("N/A") || sDate.equals("N/A") || time.equals("N/A")) return result;
         int total = course.total;
-
-        dateToMillis(start + " " + time);
+        dateString = start + " " + time;
+        dateToMillis("");
         Date date = new Date(dateInMilliseconds);
         for (int i = 0; i < total; ) {
             if (sDate.contains(Integer.toString(date.getDay()))) {
@@ -163,7 +164,10 @@ public class CalendarFragment extends Fragment {
                 i++;
             }
             date.setDate(date.getDate() + 1);
+            Log.d("Calendar", date.toString());
         }
+
+        Log.d("Calendar", result.toString());
 
         return result;
     }

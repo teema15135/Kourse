@@ -117,9 +117,12 @@ public class HomeFragment extends Fragment {
 
     private boolean isSelected = false;
 
-    boolean datePicked;
+    boolean startDatePicked = false;
+    boolean datePicked = false;
+    boolean courseTimePicked = false;
     Calendar calendar;
     Date payDay;
+    String sStartDate;
 
     Fragment fragment;
 
@@ -350,13 +353,14 @@ public class HomeFragment extends Fragment {
                         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                datePicked = true;
+                                startDatePicked = true;
                                 payDay = new Date();
                                 payDay.setYear(year);
                                 payDay.setMonth(month);
                                 payDay.setDate(dayOfMonth);
                                 payDay.setHours(1);
-                                startDate.setText(payDay.getDay() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
+                                startDate.setText(payDay.getDate() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
+                                sStartDate = payDay.getDate() + "-" + payDay.getMonth() + "-" + payDay.getYear();
                             }
                         };
                         DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
@@ -379,7 +383,8 @@ public class HomeFragment extends Fragment {
                         mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                txtshowTime.setText(selectedHour + ":" + selectedMinute);
+                                courseTimePicked = true;
+                                txtshowTime.setText(String.format("%02d",selectedHour) + ":" + String.format("%02d",selectedMinute));
                             }
                         }, hour, minute, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
@@ -432,13 +437,11 @@ public class HomeFragment extends Fragment {
 
                         String sPayAmount = payAmount.getText().toString();
                         String sPayDate = payDate.getText().toString();
-
-                        String sStartDate = startDate.getText().toString();
                         String sTime = txtshowTime.getText().toString();
 
                         Course course = new Course(sCourse, sColor, stampAmount, timeType, "N/A", "N/A", "N/A");
 
-                        if (!(sTime.isEmpty() || sStartDate.isEmpty() || timeType == 0)) {
+                        if (!(courseTimePicked || startDatePicked || timeType == 0)) {
                             /*
                              * if not start date or time aren't empty or timeType == 0
                              * change course.start, course.time and course.date
@@ -477,10 +480,7 @@ public class HomeFragment extends Fragment {
                             bundle.putString("title", sCourse + " : payment amount " + sPayDate);
 
                             fragment.setArguments(bundle);
-                            getFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container, fragment)
-                                    .commit();
+                            MainActivity.bottomNavMain.setSelectedItemId(R.id.nav_notification);
 
                             MainActivity.isHome = false;
                         }

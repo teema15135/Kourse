@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             anotherProfileFragment,
             selectedFragment;
 
+     static BottomNavigationView bottomNavMain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNav = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(this);
+        bottomNavMain = bottomNav;
 
         String page = getIntent().getStringExtra("Page");
         Log.d("Page", page);
