@@ -105,6 +105,7 @@ public class NotificationFragment extends Fragment implements LoaderManager.Load
             Uri newUri = getActivity().getContentResolver().insert(AlarmReminderContract.AlarmReminderEntry.CONTENT_URI, values);
 
             restartLoader();
+            this.setArguments(null);
         }
 
 
