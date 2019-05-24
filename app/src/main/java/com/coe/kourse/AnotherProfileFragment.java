@@ -195,7 +195,7 @@ public class AnotherProfileFragment extends Fragment implements PopupMenu.OnMenu
                     nameList.add(user.getName());
                 }
 
-                if (!MainActivity.isHome) {
+                if (MainActivity.selectedFragment == MainActivity.anotherProfileFragment) {
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, nameList);
                     listView.setAdapter(adapter);
                 }
