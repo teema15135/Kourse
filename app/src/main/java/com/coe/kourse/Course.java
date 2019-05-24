@@ -65,6 +65,11 @@ public class Course {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "Name : " + this.name + ", Color : " + this.color;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
