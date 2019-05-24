@@ -360,7 +360,7 @@ public class HomeFragment extends Fragment {
                                 payDay.setDate(dayOfMonth);
                                 payDay.setHours(1);
                                 startDate.setText(payDay.getDate() + "/" + MONTH_NAME[payDay.getMonth()] + "/" + payDay.getYear());
-                                sStartDate = payDay.getDate() + "-" + payDay.getMonth() + "-" + payDay.getYear();
+                                sStartDate = payDay.getDate() + "-" + (payDay.getMonth() + 1) + "-" + payDay.getYear();
                             }
                         };
                         DatePickerDialog dpd = new DatePickerDialog(getContext(), listener,
@@ -441,9 +441,9 @@ public class HomeFragment extends Fragment {
 
                         Course course = new Course(sCourse, sColor, stampAmount, timeType, "N/A", "N/A", "N/A");
 
-                        if (!(courseTimePicked || startDatePicked || timeType == 0)) {
+                        if (courseTimePicked && startDatePicked && timeType == 1) {
                             /*
-                             * if not start date or time aren't empty or timeType == 0
+                             * if start date and time picked and type is fix time
                              * change course.start, course.time and course.date
                              */
                             String sDay = "";
